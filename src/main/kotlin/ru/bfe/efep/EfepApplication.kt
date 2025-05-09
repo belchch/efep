@@ -5,11 +5,7 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import ru.bfe.efep.app.cases.Case
-import ru.bfe.efep.app.cases.CasePriority
 import ru.bfe.efep.app.cases.CaseRepository
-import ru.bfe.efep.app.cases.CaseStatus
-import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.court.CourtRepository
 
 @SpringBootApplication
