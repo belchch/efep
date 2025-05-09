@@ -16,5 +16,5 @@ data class Company(
     var name: String,
 
     @Column(length = 50)
-    var inn: String
+    var inn: String?
 )

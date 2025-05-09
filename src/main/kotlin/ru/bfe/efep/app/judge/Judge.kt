@@ -18,13 +18,13 @@ data class Judge (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    var count: Court,
+    var court: Court,
 
     @Column(nullable = false, length = 50)
     var firstName: String,
 
     @Column(length = 50)
-    var middleName: String,
+    var middleName: String?,
 
     @Column(nullable = false, length = 50)
     var lastName: String,
