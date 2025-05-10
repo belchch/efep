@@ -5,13 +5,18 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import ru.bfe.efep.app.cases.CaseRepository
-import ru.bfe.efep.app.court.CourtRepository
+import ru.bfe.efep.app.inspection.spot.room.Room
+import ru.bfe.efep.app.inspection.spot.room.RoomRepository
+import ru.bfe.efep.app.inspection.spot.Spot
+import ru.bfe.efep.app.inspection.spot.SpotRepository
 
 @SpringBootApplication
 class EfepApplication(
-    val courtRepository: CourtRepository,
-    val caseRepository: CaseRepository
+    /*val courtRepository: CourtRepository,
+    val caseRepository: CaseRepository*/
+
+    val spotRepository: SpotRepository,
+    val roomRepository: RoomRepository
 ) : ApplicationRunner {
     @Transactional
     override fun run(args: ApplicationArguments?) {
@@ -20,8 +25,31 @@ class EfepApplication(
         courtRepository.save(court)
         caseRepository.saveAll(cases)*/
 
-        println(courtRepository.findAll())
-        println(caseRepository.findAll())
+        //spotsAndRooms()
+
+    }
+
+    fun spotsAndRooms() {
+        // Очищаем данные (опционально)
+        roomRepository.deleteAll()
+        spotRepository.deleteAll()
+
+        // Создаем обычный Spot
+        val spot = Spot(name = "General Parking Spot")
+        spotRepository.save(spot)
+
+        // Создаем Room (который наследуется от Spot)
+        val room = Room(name = "Conference Room A")
+        roomRepository.save(room)
+
+        // Проверяем данные
+        println("All Spots:")
+        spotRepository.findAll().forEach { println(it.name) }
+
+        println("\nAll Rooms:")
+        roomRepository.findAll().forEach {
+            println("${it.name} ")
+        }
     }
 
     /*fun generateSampleData(): Pair<Court, List<Case>> {
