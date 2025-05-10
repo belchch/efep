@@ -18,7 +18,7 @@ class CaseService(
     private val userRepository: UserRepository,
 ) {
 
-    fun createCase(request: CaseUpdateRequest): CaseResponse {
+    fun createCase(request: CaseCreateRequest): CaseResponse {
         return caseRepository.save(request.toEntity(
             courtRepository = courtRepository,
             judgeRepository = judgeRepository,
@@ -41,17 +41,16 @@ class CaseService(
         id: Long,
         request: CaseUpdateRequest
     ): CaseResponse {
-        if (!caseRepository.existsById(id)) {
+        val case = caseRepository.findById(id).orElseThrow {
             notFoundException(id)
         }
 
         return caseRepository.save(request.toEntity(
-            id = id,
+            case,
             courtRepository = courtRepository,
             judgeRepository = judgeRepository,
             companyRepository = companyRepository,
             regionRepository = regionRepository,
-            userRepository = userRepository,
         )).toResponse()
     }
 

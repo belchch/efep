@@ -6,6 +6,7 @@ import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.region.Region
 import ru.bfe.efep.app.user.User
+import java.time.Instant
 
 @Entity
 @Table(name = "cases")
@@ -46,7 +47,10 @@ data class Case(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    var createdBy: User
+    var createdBy: User,
+
+    @Column(nullable = false)
+    var createdDate: Instant
 )
 
 enum class CaseStatus {

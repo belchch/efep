@@ -1,6 +1,7 @@
 package ru.bfe.efep.app.cases
 
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.data.jpa.domain.AbstractAuditable_.createdBy
 import ru.bfe.efep.app.company.Company
 import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.company.toResponse
@@ -17,16 +18,15 @@ import ru.bfe.efep.app.user.User
 import ru.bfe.efep.app.user.UserRepository
 import ru.bfe.efep.app.user.toResponse
 
-fun CaseUpdateRequest.toEntity(
+
+fun CaseCreateRequest.toEntity(
     courtRepository: CourtRepository,
     judgeRepository: JudgeRepository,
     companyRepository: CompanyRepository,
     regionRepository: RegionRepository,
-    userRepository: UserRepository,
-    id: Long? = null
+    userRepository: UserRepository
 ): Case {
     return Case(
-        id = id,
         number = number,
         status = status,
         priority = priority,
@@ -35,7 +35,30 @@ fun CaseUpdateRequest.toEntity(
         judge = judgeId?.let { judgeRepository.findByIdOrThrow(it) },
         company = companyRepository.findByIdOrThrow(companyId),
         region = regionRepository.findByIdOrThrow(regionId),
-        createdBy = userRepository.findByIdOrThrow(createdById)
+        createdBy = userRepository.findByIdOrThrow(createdById),
+        createdDate = createdDate
+    )
+}
+
+fun CaseUpdateRequest.toEntity(
+    existing: Case,
+    courtRepository: CourtRepository,
+    judgeRepository: JudgeRepository,
+    companyRepository: CompanyRepository,
+    regionRepository: RegionRepository
+): Case {
+    return Case(
+        id = existing.id,
+        number = number,
+        status = status,
+        priority = priority,
+        facilityAddress = facilityAddress,
+        court = courtId?.let { courtRepository.findByIdOrThrow(it) },
+        judge = judgeId?.let { judgeRepository.findByIdOrThrow(it) },
+        company = companyRepository.findByIdOrThrow(companyId),
+        region = regionRepository.findByIdOrThrow(regionId),
+        createdBy = existing.createdBy,
+        createdDate = existing.createdDate
     )
 }
 

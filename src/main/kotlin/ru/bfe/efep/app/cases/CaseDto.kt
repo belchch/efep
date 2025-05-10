@@ -5,6 +5,20 @@ import ru.bfe.efep.app.court.CourtResponse
 import ru.bfe.efep.app.judge.JudgeResponse
 import ru.bfe.efep.app.region.RegionResponse
 import ru.bfe.efep.app.user.UserResponse
+import java.time.Instant
+
+data class CaseCreateRequest(
+    val number: String,
+    val status: CaseStatus,
+    val priority: CasePriority,
+    val facilityAddress: String,
+    val courtId: Long?,
+    val judgeId: Long?,
+    val companyId: Long,
+    val regionId: Long,
+    val createdById: Long,
+    val createdDate: Instant
+)
 
 data class CaseUpdateRequest(
     val number: String,
@@ -14,8 +28,7 @@ data class CaseUpdateRequest(
     val courtId: Long?,
     val judgeId: Long?,
     val companyId: Long,
-    val regionId: Long,
-    val createdById: Long
+    val regionId: Long
 )
 
 data class CasePatchRequest(
@@ -26,8 +39,7 @@ data class CasePatchRequest(
     val courtId: Long? = null,
     val judgeId: Long? = null,
     val companyId: Long? = null,
-    val regionId: Long? = null,
-    val createdById: Long? = null,
+    val regionId: Long? = null
 )
 
 data class CaseResponse(
