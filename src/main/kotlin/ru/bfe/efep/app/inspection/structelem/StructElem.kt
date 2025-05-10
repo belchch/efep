@@ -1,0 +1,17 @@
+package ru.bfe.efep.app.inspection.structelem
+
+import jakarta.persistence.*
+import ru.bfe.efep.app.inspection.material.Material
+
+@Entity
+@Table(name = "struct_elems")
+data class StructElem(
+    @Id @GeneratedValue
+    val id: Long? = null,
+
+    @Column(nullable = false)
+    var name: String,
+
+    @ManyToMany(cascade = [(CascadeType.MERGE)])
+    val materials: List<Material>
+)

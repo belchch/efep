@@ -6,6 +6,7 @@ import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.court.CourtRepository
 import ru.bfe.efep.app.judge.JudgeRepository
 import ru.bfe.efep.app.region.RegionRepository
+import ru.bfe.efep.app.user.UserRepository
 
 @Service
 class CaseService(
@@ -13,7 +14,8 @@ class CaseService(
     private val companyRepository: CompanyRepository,
     private val courtRepository: CourtRepository,
     private val judgeRepository: JudgeRepository,
-    private val regionRepository: RegionRepository
+    private val regionRepository: RegionRepository,
+    private val userRepository: UserRepository,
 ) {
 
     fun createCase(request: CaseUpdateRequest): CaseResponse {
@@ -22,7 +24,7 @@ class CaseService(
             judgeRepository = judgeRepository,
             companyRepository = companyRepository,
             regionRepository = regionRepository,
-
+            userRepository = userRepository,
         )).toResponse()
     }
 
@@ -49,6 +51,7 @@ class CaseService(
             judgeRepository = judgeRepository,
             companyRepository = companyRepository,
             regionRepository = regionRepository,
+            userRepository = userRepository,
         )).toResponse()
     }
 

@@ -5,6 +5,7 @@ import ru.bfe.efep.app.company.Company
 import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.region.Region
+import ru.bfe.efep.app.user.User
 
 @Entity
 @Table(name = "cases")
@@ -41,7 +42,11 @@ data class Case(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    var region: Region
+    var region: Region,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    var createdBy: User
 )
 
 enum class CaseStatus {

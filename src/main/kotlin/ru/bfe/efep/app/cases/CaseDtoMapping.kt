@@ -13,12 +13,16 @@ import ru.bfe.efep.app.judge.toResponse
 import ru.bfe.efep.app.region.Region
 import ru.bfe.efep.app.region.RegionRepository
 import ru.bfe.efep.app.region.toResponse
+import ru.bfe.efep.app.user.User
+import ru.bfe.efep.app.user.UserRepository
+import ru.bfe.efep.app.user.toResponse
 
 fun CaseUpdateRequest.toEntity(
     courtRepository: CourtRepository,
     judgeRepository: JudgeRepository,
     companyRepository: CompanyRepository,
     regionRepository: RegionRepository,
+    userRepository: UserRepository,
     id: Long? = null
 ): Case {
     return Case(
@@ -30,7 +34,8 @@ fun CaseUpdateRequest.toEntity(
         court = courtId?.let { courtRepository.findByIdOrThrow(it) },
         judge = judgeId?.let { judgeRepository.findByIdOrThrow(it) },
         company = companyRepository.findByIdOrThrow(companyId),
-        region = regionRepository.findByIdOrThrow(regionId)
+        region = regionRepository.findByIdOrThrow(regionId),
+        createdBy = userRepository.findByIdOrThrow(createdById)
     )
 }
 
@@ -49,7 +54,8 @@ fun CasePatchRequest.mergeWithEntity(
         court = courtId?.let { courtRepository.findByIdOrThrow(it) } ?: existing.court,
         judge = judgeId?.let { judgeRepository.findByIdOrThrow(it) } ?: existing.judge,
         company = companyId?.let { companyRepository.findByIdOrThrow(it) } ?: existing.company,
-        region = regionId?.let { regionRepository.findByIdOrThrow(it) } ?: existing.region
+        region = regionId?.let { regionRepository.findByIdOrThrow(it) } ?: existing.region,
+        createdBy = existing.createdBy
     )
 }
 
@@ -62,7 +68,8 @@ fun Case.toResponse() = CaseResponse(
     court = court?.toResponse(),
     judge = judge?.toResponse(),
     company = company.toResponse(),
-    region = region.toResponse()
+    region = region.toResponse(),
+    createdBy = createdBy.toResponse()
 )
 
 fun CourtRepository.findByIdOrThrow(id: Long): Court {
@@ -79,4 +86,8 @@ fun CompanyRepository.findByIdOrThrow(id: Long): Company {
 
 fun RegionRepository.findByIdOrThrow(id: Long): Region {
     return findById(id).orElseThrow { EntityNotFoundException("Region not found with id: $id") }
+}
+
+fun UserRepository.findByIdOrThrow(id: Long): User {
+    return findById(id).orElseThrow { EntityNotFoundException("User not found with id: $id") }
 }
