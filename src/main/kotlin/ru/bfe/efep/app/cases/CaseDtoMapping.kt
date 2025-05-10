@@ -1,7 +1,6 @@
 package ru.bfe.efep.app.cases
 
 import jakarta.persistence.EntityNotFoundException
-import org.springframework.data.jpa.domain.AbstractAuditable_.createdBy
 import ru.bfe.efep.app.company.Company
 import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.company.toResponse
