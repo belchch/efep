@@ -2,7 +2,6 @@ package ru.bfe.efep.app.inspection.photodoc
 
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.RequestParam
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.spot.SpotRepository

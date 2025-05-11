@@ -1,10 +1,10 @@
 package ru.bfe.efep.app.config.security
 
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.crypto.SecretKey
@@ -20,37 +20,43 @@ class JwtService(
         return Keys.hmacShaKeyFor(keyBytes)
     }
 
-    fun extractUsername(token: String): String = extractClaim(token, Claims::getSubject)
-
     fun <T> extractClaim(token: String, claimsResolver: (Claims) -> T): T {
         val claims = extractAllClaims(token)
         return claimsResolver(claims)
     }
 
-    fun generateToken(userDetails: UserDetails): String =
-        generateToken(emptyMap(), userDetails)
+    fun generateAccessToken(username: String): String = generateToken(username, jwtProperties.accessTokenExpiration)
 
-    fun generateToken(
-        extraClaims: Map<String, Any>,
-        userDetails: UserDetails
+    fun generateRefreshToken(username: String): String = generateToken(username, jwtProperties.refreshTokenExpiration)
+
+    private fun generateToken(
+        username: String,
+        expiration: Long
     ): String = Jwts.builder()
-        .claims(extraClaims)
-        .subject(userDetails.username)
+        .subject(username)
         .issuedAt(Date())
-        .expiration(Date(System.currentTimeMillis() + jwtProperties.expiration))
+        .expiration(Date(System.currentTimeMillis() + expiration))
         .signWith(getSignInKey(), Jwts.SIG.HS256)
         .compact()
 
-    fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
-        val username = extractUsername(token)
-        return (username == userDetails.username) && !isTokenExpired(token)
+    fun validateToken(token: String): Boolean {
+        return try {
+            jwtParser.parse(token)
+            true
+        } catch (e: JwtException) {
+            e.printStackTrace()
+            false
+        }
     }
 
-    private fun isTokenExpired(token: String): Boolean =
+    fun isTokenExpired(token: String): Boolean =
         extractExpiration(token).before(Date())
 
-    private fun extractExpiration(token: String): Date =
+    fun extractExpiration(token: String): Date =
         extractClaim(token, Claims::getExpiration)
+
+    fun extractUsername(token: String): String =
+        extractClaim(token, Claims::getSubject)
 
     private fun extractAllClaims(token: String): Claims =
         jwtParser.parseSignedClaims(token).payload

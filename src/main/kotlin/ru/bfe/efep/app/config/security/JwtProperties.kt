@@ -5,10 +5,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "jwt")
 data class JwtProperties(
     val secret: String,
-    val expiration: Long
+    val accessTokenExpiration: Long,
+    val refreshTokenExpiration: Long
 ) {
     init {
         require(secret.length >= 32) { "JWT secret must be at least 32 characters" }
-        require(expiration > 0) { "Expiration must be positive" }
+        require(accessTokenExpiration > 0) { "Access token expiration must be positive" }
+        require(refreshTokenExpiration > 0) { "Refresh token expiration must be positive" }
     }
 }

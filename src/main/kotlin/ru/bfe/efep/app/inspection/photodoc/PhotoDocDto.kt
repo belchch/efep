@@ -2,15 +2,12 @@ package ru.bfe.efep.app.inspection.photodoc
 
 import jakarta.persistence.EntityNotFoundException
 import ru.bfe.efep.app.inspection.Inspection
-import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.material.MaterialResponse
 import ru.bfe.efep.app.material.toResponse
-import ru.bfe.efep.app.spot.Spot
 import ru.bfe.efep.app.spot.SpotRepository
 import ru.bfe.efep.app.spot.SpotResponse
 import ru.bfe.efep.app.spot.toResponse
-import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 import ru.bfe.efep.app.structelem.StructElemResponse
 import ru.bfe.efep.app.structelem.toResponse

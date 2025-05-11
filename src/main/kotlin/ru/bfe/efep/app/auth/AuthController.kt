@@ -2,15 +2,10 @@ package ru.bfe.efep.app.auth
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.bfe.efep.app.config.security.JwtService
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,22 +13,45 @@ class AuthController(
     private val authService: AuthService,
 ) {
     @PostMapping("/login")
-    fun login(@RequestBody request: AuthRequest): ResponseEntity<AuthResponse> {
-        val jwtToken = authService.login(request.username, request.password)
-        return ResponseEntity.ok(AuthResponse(jwtToken))
+    fun login(@RequestBody request: CredentialsRequest): ResponseEntity<TokenResponse> {
+        val (accessToken, refreshToken) = authService.login(request.username, request.password)
+
+        return ResponseEntity.ok(TokenResponse(
+            accessToken = accessToken,
+            refreshToken = refreshToken
+        ))
+    }
+
+    @PostMapping("/refresh")
+    fun refresh(@RequestBody request: RefreshTokenRequest): ResponseEntity<TokenResponse> {
+        val (accessToken, refreshToken) = authService.refreshToken(request.refreshToken)
+
+        return ResponseEntity.ok(TokenResponse(
+            accessToken = accessToken,
+            refreshToken = refreshToken
+        ))
+    }
+
+    @PostMapping("/logout")
+    fun logout(@RequestBody request: RefreshTokenRequest): ResponseEntity<Any> {
+        authService.logout(request.refreshToken)
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/register")
     fun register(
-        @RequestBody request: RegisterRequest
-    ): ResponseEntity<AuthResponse> {
-        val jwtToken = authService.register(request.username, request.password)
+        @RequestBody request: CredentialsRequest
+    ): ResponseEntity<TokenResponse> {
+        val (accessToken, refreshToken) = authService.register(request.username, request.password)
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(AuthResponse(jwtToken))
+            .body(TokenResponse(
+                accessToken = accessToken,
+                refreshToken = refreshToken
+            ))
     }
 }
 
-data class AuthRequest(val username: String, val password: String)
-data class AuthResponse(val token: String)
-data class RegisterRequest(val username: String, val password: String)
+data class CredentialsRequest(val username: String, val password: String)
+data class TokenResponse(val accessToken: String, val refreshToken: String)
+data class RefreshTokenRequest(val refreshToken: String)
