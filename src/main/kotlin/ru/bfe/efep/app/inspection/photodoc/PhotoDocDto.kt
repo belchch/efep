@@ -4,10 +4,16 @@ import jakarta.persistence.EntityNotFoundException
 import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.material.MaterialRepository
+import ru.bfe.efep.app.material.MaterialResponse
+import ru.bfe.efep.app.material.toResponse
 import ru.bfe.efep.app.spot.Spot
 import ru.bfe.efep.app.spot.SpotRepository
+import ru.bfe.efep.app.spot.SpotResponse
+import ru.bfe.efep.app.spot.toResponse
 import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
+import ru.bfe.efep.app.structelem.StructElemResponse
+import ru.bfe.efep.app.structelem.toResponse
 
 data class PhotoDocUpdateRequest(
     val source: String,
@@ -20,9 +26,9 @@ data class PhotoDocUpdateRequest(
 data class PhotoDocResponse(
     val id: Long,
     val source: String,
-    val spot: Spot?,
-    val structElem: StructElem?,
-    val material: Material?,
+    val spot: SpotResponse?,
+    val structElem: StructElemResponse?,
+    val material: MaterialResponse?,
     val type: PhotoDocType?
 )
 
@@ -57,9 +63,9 @@ private fun <T> ifDefect(type: PhotoDocType?, produce: () -> T): T? {
 fun PhotoDoc.toResponse() = PhotoDocResponse(
     id = id!!,
     source = source,
-    spot = spot,
-    structElem = structElem,
-    material = material,
+    spot = spot?.toResponse(),
+    structElem = structElem?.toResponse(),
+    material = material?.toResponse(),
     type = type,
 )
 

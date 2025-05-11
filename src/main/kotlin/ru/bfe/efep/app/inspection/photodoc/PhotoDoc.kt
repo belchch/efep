@@ -31,7 +31,16 @@ class PhotoDoc(
 
     @Enumerated(EnumType.STRING)
     var type: PhotoDocType? = null
-)
+) {
+    @PrePersist
+    @PreUpdate
+    private fun validate() {
+        if (type == PhotoDocType.GENERAL_VIEW) {
+            require(material == null) { "Material must be null for GENERAL_VIEW type" }
+            require(structElem == null) { "StructElem must be null for GENERAL_VIEW type" }
+        }
+    }
+}
 
 enum class PhotoDocType {
     DEFECT, GENERAL_VIEW

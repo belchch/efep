@@ -2,7 +2,7 @@ package ru.bfe.efep.app.spot.room
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
-import ru.bfe.efep.app.inspection.spot.Spot
+import ru.bfe.efep.app.spot.Spot
 
 @Entity
 @Table(name = "rooms")

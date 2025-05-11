@@ -2,6 +2,7 @@ package ru.bfe.efep.app.inspection.photodoc
 
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.RequestParam
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.spot.SpotRepository
@@ -37,18 +38,19 @@ class PhotoDocService(
 
     fun searchPhotoDocs(
         inspectionId: Long,
-        spotId: Long?,
-        structElemId: Long?,
-        materialId: Long?,
-        type: PhotoDocType?
+        spotIds: List<Long?>?,
+        structElemIds: List<Long?>?,
+        materialIds: List<Long?>?,
+        types: List<PhotoDocType?>?
     ): List<PhotoDocResponse> {
-        return photoDocRepository.search(
+        val spec = buildSearchSpecification(
             inspectionId = inspectionId,
-            spotId = spotId,
-            structElemId = structElemId,
-            materialId = materialId,
-            type = type
-        ).map { it.toResponse() }
+            spotIds = spotIds,
+            structElemIds = structElemIds,
+            materialIds = materialIds,
+            types = types
+        )
+        return photoDocRepository.findAll(spec).map { it.toResponse() }
     }
 
     fun updatePhotoDoc(

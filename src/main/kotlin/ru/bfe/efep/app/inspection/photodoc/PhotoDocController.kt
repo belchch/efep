@@ -34,17 +34,25 @@ class PhotoDocController(
     @GetMapping
     fun searchPhotoDocs(
         @PathVariable inspectionId: Long,
-        @RequestParam spotId: Long?,
-        @RequestParam structElemId: Long?,
-        @RequestParam materialId: Long?,
-        @RequestParam type: PhotoDocType?
+        @RequestParam spotId: List<Long>?,
+        @RequestParam structElemId: List<Long>?,
+        @RequestParam materialId: List<Long>?,
+        @RequestParam type: List<PhotoDocType>?,
+        @RequestParam spotIdIsNull: Boolean?,
+        @RequestParam structElemIdIsNull: Boolean?,
+        @RequestParam materialIdIsNull: Boolean?,
+        @RequestParam typeIsNull: Boolean?
     ): ResponseEntity<List<PhotoDocResponse>> {
+        fun <T> appendNull(list: List<T>?, hasNull: Boolean?) =
+            if (hasNull == true) listOf(null) + (list ?: emptyList()) else list
+
+
         val photoDocs = photoDocService.searchPhotoDocs(
             inspectionId = inspectionId,
-            spotId = spotId,
-            structElemId = structElemId,
-            materialId = materialId,
-            type = type
+            spotIds = appendNull(spotId, spotIdIsNull),
+            structElemIds = appendNull(structElemId, structElemIdIsNull),
+            materialIds = appendNull(materialId, materialIdIsNull),
+            types = appendNull(type, typeIsNull)
         )
 
         return ResponseEntity.ok(photoDocs)
