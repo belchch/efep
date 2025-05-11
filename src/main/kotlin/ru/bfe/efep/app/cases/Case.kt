@@ -50,7 +50,7 @@ data class Case(
     var createdBy: User,
 
     @Column(nullable = false)
-    var createdDate: Instant
+    var createdAt: Instant
 )
 
 enum class CaseStatus {

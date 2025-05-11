@@ -52,5 +52,6 @@ data class CaseResponse(
     val judge: JudgeResponse?,
     val company: CompanyResponse,
     val region: RegionResponse,
-    val createdBy: UserResponse
+    val createdBy: UserResponse,
+    val createdAt: Instant,
 )

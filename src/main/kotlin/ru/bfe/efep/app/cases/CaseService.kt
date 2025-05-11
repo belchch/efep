@@ -7,6 +7,7 @@ import ru.bfe.efep.app.court.CourtRepository
 import ru.bfe.efep.app.judge.JudgeRepository
 import ru.bfe.efep.app.region.RegionRepository
 import ru.bfe.efep.app.user.UserRepository
+import java.time.Instant
 
 @Service
 class CaseService(
@@ -19,13 +20,15 @@ class CaseService(
 ) {
 
     fun createCase(request: CaseCreateRequest): CaseResponse {
-        return caseRepository.save(request.toEntity(
-            courtRepository = courtRepository,
-            judgeRepository = judgeRepository,
-            companyRepository = companyRepository,
-            regionRepository = regionRepository,
-            userRepository = userRepository,
-        )).toResponse()
+        return caseRepository.save(
+            request.toEntity(
+                courtRepository = courtRepository,
+                judgeRepository = judgeRepository,
+                companyRepository = companyRepository,
+                regionRepository = regionRepository,
+                userRepository = userRepository,
+            )
+        ).toResponse()
     }
 
     fun getCase(id: Long): CaseResponse {
@@ -33,8 +36,32 @@ class CaseService(
             .orElseThrow { notFoundException(id) }
     }
 
-    fun getAllCases(): List<CaseResponse> {
-        return caseRepository.findAll().map { it.toResponse() }
+    fun searchCases(
+        number: String?,
+        statuses: Set<CaseStatus>?,
+        priorities: Set<CasePriority>?,
+        facilityAddress: String?,
+        courtIds: List<Long?>?,
+        judgeIds: List<Long?>?,
+        companyIds: List<Long>?,
+        regionIds: List<Long>?,
+        createdAtFrom: Instant?,
+        createdAtTo: Instant?
+    ): List<CaseResponse> {
+        val spec = buildCaseSpecification(
+            number = number,
+            statuses = statuses,
+            priorities = priorities,
+            facilityAddress = facilityAddress,
+            courtIds = courtIds,
+            judgeIds = judgeIds,
+            companyIds = companyIds,
+            regionIds = regionIds,
+            createdAtFrom = createdAtFrom,
+            createdAtTo = createdAtTo
+        )
+
+        return caseRepository.findAll(spec).map { it.toResponse() }
     }
 
     fun updateCase(
@@ -45,13 +72,15 @@ class CaseService(
             notFoundException(id)
         }
 
-        return caseRepository.save(request.toEntity(
-            case,
-            courtRepository = courtRepository,
-            judgeRepository = judgeRepository,
-            companyRepository = companyRepository,
-            regionRepository = regionRepository,
-        )).toResponse()
+        return caseRepository.save(
+            request.toEntity(
+                case,
+                courtRepository = courtRepository,
+                judgeRepository = judgeRepository,
+                companyRepository = companyRepository,
+                regionRepository = regionRepository,
+            )
+        ).toResponse()
     }
 
     fun patchCase(
@@ -60,13 +89,15 @@ class CaseService(
     ): CaseResponse {
         val case = caseRepository.findById(id).orElseThrow { notFoundException(id) }
 
-        return caseRepository.save(request.mergeWithEntity(
-            existing = case,
-            courtRepository = courtRepository,
-            judgeRepository = judgeRepository,
-            companyRepository = companyRepository,
-            regionRepository = regionRepository,
-        )).toResponse()
+        return caseRepository.save(
+            request.mergeWithEntity(
+                existing = case,
+                courtRepository = courtRepository,
+                judgeRepository = judgeRepository,
+                companyRepository = companyRepository,
+                regionRepository = regionRepository,
+            )
+        ).toResponse()
     }
 
     fun deleteCase(id: Long) {

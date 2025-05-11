@@ -46,7 +46,6 @@ class PhotoDocController(
         fun <T> appendNull(list: List<T>?, hasNull: Boolean?) =
             if (hasNull == true) listOf(null) + (list ?: emptyList()) else list
 
-
         val photoDocs = photoDocService.searchPhotoDocs(
             inspectionId = inspectionId,
             spotIds = appendNull(spotId, spotIdIsNull),

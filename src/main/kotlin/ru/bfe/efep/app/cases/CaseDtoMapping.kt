@@ -35,7 +35,7 @@ fun CaseCreateRequest.toEntity(
         company = companyRepository.findByIdOrThrow(companyId),
         region = regionRepository.findByIdOrThrow(regionId),
         createdBy = userRepository.findByIdOrThrow(createdById),
-        createdDate = createdDate
+        createdAt = createdDate
     )
 }
 
@@ -57,7 +57,7 @@ fun CaseUpdateRequest.toEntity(
         company = companyRepository.findByIdOrThrow(companyId),
         region = regionRepository.findByIdOrThrow(regionId),
         createdBy = existing.createdBy,
-        createdDate = existing.createdDate
+        createdAt = existing.createdAt
     )
 }
 
@@ -91,7 +91,8 @@ fun Case.toResponse() = CaseResponse(
     judge = judge?.toResponse(),
     company = company.toResponse(),
     region = region.toResponse(),
-    createdBy = createdBy.toResponse()
+    createdBy = createdBy.toResponse(),
+    createdAt = createdAt
 )
 
 fun CourtRepository.findByIdOrThrow(id: Long): Court {
