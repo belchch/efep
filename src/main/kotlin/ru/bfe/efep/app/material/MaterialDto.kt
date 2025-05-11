@@ -1,4 +1,4 @@
-package ru.bfe.efep.app.inspection.material
+package ru.bfe.efep.app.material
 
 data class MaterialUpdateRequest(
     val name: String

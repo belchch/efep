@@ -1,4 +1,4 @@
-package ru.bfe.efep.app.inspection.spot.room
+package ru.bfe.efep.app.spot.room
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Table

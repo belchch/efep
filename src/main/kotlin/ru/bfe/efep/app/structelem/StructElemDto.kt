@@ -1,10 +1,8 @@
-package ru.bfe.efep.app.inspection.structelem
+package ru.bfe.efep.app.structelem
 
 import ru.bfe.efep.app.inspection.material.MaterialRepository
 import ru.bfe.efep.app.inspection.material.MaterialResponse
 import ru.bfe.efep.app.inspection.material.toResponse
-import kotlin.Long
-import kotlin.collections.List
 
 data class StructElemUpdateRequest(
     val name: String,

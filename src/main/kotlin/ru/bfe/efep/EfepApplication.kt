@@ -5,10 +5,10 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import ru.bfe.efep.app.inspection.spot.room.Room
-import ru.bfe.efep.app.inspection.spot.room.RoomRepository
 import ru.bfe.efep.app.inspection.spot.Spot
 import ru.bfe.efep.app.inspection.spot.SpotRepository
+import ru.bfe.efep.app.inspection.spot.room.Room
+import ru.bfe.efep.app.inspection.spot.room.RoomRepository
 
 @SpringBootApplication
 class EfepApplication(

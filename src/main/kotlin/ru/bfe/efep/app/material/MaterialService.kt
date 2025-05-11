@@ -1,4 +1,4 @@
-package ru.bfe.efep.app.inspection.material
+package ru.bfe.efep.app.material
 
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service

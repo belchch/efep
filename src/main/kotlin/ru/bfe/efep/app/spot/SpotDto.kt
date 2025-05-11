@@ -1,4 +1,4 @@
-package ru.bfe.efep.app.inspection.spot
+package ru.bfe.efep.app.spot
 
 data class SpotUpdateRequest(
     val name: String

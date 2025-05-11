@@ -1,4 +1,4 @@
-package ru.bfe.efep.app.inspection.structelem
+package ru.bfe.efep.app.structelem
 
 import jakarta.persistence.*
 import ru.bfe.efep.app.inspection.material.Material

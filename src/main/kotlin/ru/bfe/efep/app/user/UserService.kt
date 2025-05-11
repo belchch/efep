@@ -2,8 +2,6 @@ package ru.bfe.efep.app.user
 
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
-import ru.bfe.efep.app.court.toEntity
-import ru.bfe.efep.app.court.toResponse
 
 @Service
 class UserService(
