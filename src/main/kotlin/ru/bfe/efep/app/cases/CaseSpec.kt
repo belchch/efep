@@ -25,12 +25,12 @@ fun buildCaseSpecification(
         addLikePredicate(predicates, number, "number", root, cb)
         addLikePredicate(predicates, facilityAddress, "facilityAddress", root, cb)
 
-        addEnumPredicate(predicates, statuses, "status", root, cb)
-        addEnumPredicate(predicates, priorities, "priority", root, cb)
+        addEnumPredicate(predicates, statuses, "status", root)
+        addEnumPredicate(predicates, priorities, "priority", root)
 
-        addRequiredRelationPredicate(predicates, companyIds, "company", root, cb)
-        addRequiredRelationPredicate(predicates, regionIds, "region", root, cb)
-        addRequiredRelationPredicate(predicates, createdByIds, "createdBy", root, cb)
+        addRequiredRelationPredicate(predicates, companyIds, "company", root)
+        addRequiredRelationPredicate(predicates, regionIds, "region", root)
+        addRequiredRelationPredicate(predicates, createdByIds, "createdBy", root)
 
         addNullableRelationPredicate(predicates, courtIds, "court", root, cb)
         addNullableRelationPredicate(predicates, judgeIds, "judge", root, cb)
@@ -57,8 +57,7 @@ private fun <T : Enum<T>> addEnumPredicate(
     predicates: MutableList<Predicate>,
     values: Set<T>?,
     fieldName: String,
-    root: Root<Case>,
-    cb: CriteriaBuilder
+    root: Root<Case>
 ) {
     values?.takeIf { it.isNotEmpty() }?.let {
         predicates.add(root.get<T>(fieldName).`in`(it))
@@ -69,8 +68,7 @@ private fun addRequiredRelationPredicate(
     predicates: MutableList<Predicate>,
     ids: List<Long>?,
     relationName: String,
-    root: Root<Case>,
-    cb: CriteriaBuilder
+    root: Root<Case>
 ) {
     ids?.takeIf { it.isNotEmpty() }?.let {
         predicates.add(root.get<Any>(relationName).get<Long>("id").`in`(it))
