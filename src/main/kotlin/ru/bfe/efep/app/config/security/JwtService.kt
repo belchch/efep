@@ -37,7 +37,7 @@ class JwtService(
         .claims(extraClaims)
         .subject(userDetails.username)
         .issuedAt(Date())
-        .expiration(Date(jwtProperties.expiration))
+        .expiration(Date(System.currentTimeMillis() + jwtProperties.expiration))
         .signWith(getSignInKey(), Jwts.SIG.HS256)
         .compact()
 
