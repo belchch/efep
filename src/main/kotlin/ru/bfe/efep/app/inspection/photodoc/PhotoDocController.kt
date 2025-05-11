@@ -24,17 +24,30 @@ class PhotoDocController(
         @PathVariable inspectionId: Long,
         @PathVariable id: Long
     ): ResponseEntity<PhotoDocResponse> {
-        val court = photoDocService.getPhotoDoc(
+        val photoDoc = photoDocService.getPhotoDoc(
             inspectionId = inspectionId,
             id = id
         )
-        return ResponseEntity.ok(court)
+        return ResponseEntity.ok(photoDoc)
     }
 
     @GetMapping
-    fun getAllPhotoDocs(@PathVariable inspectionId: Long,): ResponseEntity<List<PhotoDocResponse>> {
-        val courts = photoDocService.getAllPhotoDocs(inspectionId)
-        return ResponseEntity.ok(courts)
+    fun searchPhotoDocs(
+        @PathVariable inspectionId: Long,
+        @RequestParam spotId: Long?,
+        @RequestParam structElemId: Long?,
+        @RequestParam materialId: Long?,
+        @RequestParam type: PhotoDocType?
+    ): ResponseEntity<List<PhotoDocResponse>> {
+        val photoDocs = photoDocService.searchPhotoDocs(
+            inspectionId = inspectionId,
+            spotId = spotId,
+            structElemId = structElemId,
+            materialId = materialId,
+            type = type
+        )
+
+        return ResponseEntity.ok(photoDocs)
     }
 
     @PutMapping("/{id}")

@@ -1,7 +1,7 @@
 package ru.bfe.efep.app.structelem
 
 import jakarta.persistence.*
-import ru.bfe.efep.app.inspection.material.Material
+import ru.bfe.efep.app.material.Material
 
 @Entity
 @Table(name = "struct_elems")

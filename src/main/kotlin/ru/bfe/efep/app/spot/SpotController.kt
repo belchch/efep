@@ -18,14 +18,14 @@ class SpotController(
 
     @GetMapping("/{id}")
     fun getSpot(@PathVariable id: Long): ResponseEntity<SpotResponse> {
-        val court = spotService.getSpot(id)
-        return ResponseEntity.ok(court)
+        val spot = spotService.getSpot(id)
+        return ResponseEntity.ok(spot)
     }
 
     @GetMapping
     fun getAllSpots(): ResponseEntity<List<SpotResponse>> {
-        val courts = spotService.getAllSpots()
-        return ResponseEntity.ok(courts)
+        val spots = spotService.getAllSpots()
+        return ResponseEntity.ok(spots)
     }
 
     @PutMapping("/{id}")

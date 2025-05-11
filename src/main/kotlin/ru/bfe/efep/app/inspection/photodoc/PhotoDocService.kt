@@ -35,8 +35,20 @@ class PhotoDocService(
             )
     }
 
-    fun getAllPhotoDocs(inspectionId: Long): List<PhotoDocResponse> {
-        return photoDocRepository.findByInspectionId(inspectionId).map { it.toResponse() }
+    fun searchPhotoDocs(
+        inspectionId: Long,
+        spotId: Long?,
+        structElemId: Long?,
+        materialId: Long?,
+        type: PhotoDocType?
+    ): List<PhotoDocResponse> {
+        return photoDocRepository.search(
+            inspectionId = inspectionId,
+            spotId = spotId,
+            structElemId = structElemId,
+            materialId = materialId,
+            type = type
+        ).map { it.toResponse() }
     }
 
     fun updatePhotoDoc(

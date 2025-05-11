@@ -18,14 +18,14 @@ class RegionController(
 
     @GetMapping("/{id}")
     fun getRegion(@PathVariable id: Long): ResponseEntity<RegionResponse> {
-        val court = regionService.getRegion(id)
-        return ResponseEntity.ok(court)
+        val region = regionService.getRegion(id)
+        return ResponseEntity.ok(region)
     }
 
     @GetMapping
     fun getAllRegions(): ResponseEntity<List<RegionResponse>> {
-        val courts = regionService.getAllRegions()
-        return ResponseEntity.ok(courts)
+        val regions = regionService.getAllRegions()
+        return ResponseEntity.ok(regions)
     }
 
     @PutMapping("/{id}")

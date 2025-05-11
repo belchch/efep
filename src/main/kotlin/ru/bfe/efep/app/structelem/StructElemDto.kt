@@ -1,8 +1,9 @@
 package ru.bfe.efep.app.structelem
 
-import ru.bfe.efep.app.inspection.material.MaterialRepository
-import ru.bfe.efep.app.inspection.material.MaterialResponse
-import ru.bfe.efep.app.inspection.material.toResponse
+import ru.bfe.efep.app.material.MaterialRepository
+import ru.bfe.efep.app.material.MaterialResponse
+import ru.bfe.efep.app.material.toResponse
+
 
 data class StructElemUpdateRequest(
     val name: String,

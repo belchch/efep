@@ -18,14 +18,14 @@ class InspectionController(
 
     @GetMapping("/{id}")
     fun getInspection(@PathVariable id: Long): ResponseEntity<InspectionResponse> {
-        val court = inspectionService.getInspection(id)
-        return ResponseEntity.ok(court)
+        val inspection = inspectionService.getInspection(id)
+        return ResponseEntity.ok(inspection)
     }
 
     @GetMapping
     fun getAllInspections(): ResponseEntity<List<InspectionResponse>> {
-        val courts = inspectionService.getAllInspections()
-        return ResponseEntity.ok(courts)
+        val inspections = inspectionService.getAllInspections()
+        return ResponseEntity.ok(inspections)
     }
 
     @PutMapping("/{id}")

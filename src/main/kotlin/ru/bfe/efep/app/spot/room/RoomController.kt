@@ -18,14 +18,14 @@ class RoomController(
 
     @GetMapping("/{id}")
     fun getRoom(@PathVariable id: Long): ResponseEntity<RoomResponse> {
-        val court = roomService.getRoom(id)
-        return ResponseEntity.ok(court)
+        val room = roomService.getRoom(id)
+        return ResponseEntity.ok(room)
     }
 
     @GetMapping
     fun getAllRooms(): ResponseEntity<List<RoomResponse>> {
-        val courts = roomService.getAllRooms()
-        return ResponseEntity.ok(courts)
+        val rooms = roomService.getAllRooms()
+        return ResponseEntity.ok(rooms)
     }
 
     @PutMapping("/{id}")

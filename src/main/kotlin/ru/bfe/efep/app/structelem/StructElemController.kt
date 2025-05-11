@@ -18,14 +18,14 @@ class StructElemController(
 
     @GetMapping("/{id}")
     fun getStructElem(@PathVariable id: Long): ResponseEntity<StructElemResponse> {
-        val court = structElemService.getStructElem(id)
-        return ResponseEntity.ok(court)
+        val structElem = structElemService.getStructElem(id)
+        return ResponseEntity.ok(structElem)
     }
 
     @GetMapping
     fun getAllStructElems(): ResponseEntity<List<StructElemResponse>> {
-        val courts = structElemService.getAllStructElems()
-        return ResponseEntity.ok(courts)
+        val structElems = structElemService.getAllStructElems()
+        return ResponseEntity.ok(structElems)
     }
 
     @PutMapping("/{id}")

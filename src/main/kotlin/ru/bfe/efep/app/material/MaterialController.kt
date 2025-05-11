@@ -18,14 +18,14 @@ class MaterialController(
 
     @GetMapping("/{id}")
     fun getMaterial(@PathVariable id: Long): ResponseEntity<MaterialResponse> {
-        val court = materialService.getMaterial(id)
-        return ResponseEntity.ok(court)
+        val material = materialService.getMaterial(id)
+        return ResponseEntity.ok(material)
     }
 
     @GetMapping
     fun getAllMaterials(): ResponseEntity<List<MaterialResponse>> {
-        val courts = materialService.getAllMaterials()
-        return ResponseEntity.ok(courts)
+        val materials = materialService.getAllMaterials()
+        return ResponseEntity.ok(materials)
     }
 
     @PutMapping("/{id}")

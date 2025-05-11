@@ -2,7 +2,7 @@ package ru.bfe.efep.app.structelem
 
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
-import ru.bfe.efep.app.inspection.material.MaterialRepository
+import ru.bfe.efep.app.material.MaterialRepository
 
 @Service
 class StructElemService(

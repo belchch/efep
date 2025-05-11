@@ -18,14 +18,14 @@ class UserController(
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
-        val court = userService.getUser(id)
-        return ResponseEntity.ok(court)
+        val user = userService.getUser(id)
+        return ResponseEntity.ok(user)
     }
 
     @GetMapping
     fun getAllUsers(): ResponseEntity<List<UserResponse>> {
-        val courts = userService.getAllUsers()
-        return ResponseEntity.ok(courts)
+        val users = userService.getAllUsers()
+        return ResponseEntity.ok(users)
     }
 
     @PutMapping("/{id}")
