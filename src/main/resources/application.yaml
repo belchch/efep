@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/efep
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/efep}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,5 +14,11 @@ spring:
         format_sql: true
 jwt:
   secret: 5pDbZ1eR1tXmj5QB0qfqgov8VgTlcNZbkyoSwh3VbIo
-  access-token-expiration: 20000
+  access-token-expiration: 86400000
   refresh-token-expiration: 86400000
+cors:
+  allowed-origins:
+    - "http://localhost:9000"
+  allowed-methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+  allowed-headers: "*"
+  allow-credentials: true

@@ -2,6 +2,8 @@ package ru.bfe.efep.app.user
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -9,6 +11,11 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService
 ) {
+
+    @GetMapping("/current")
+    fun currentUser(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<UserResponse> {
+        return ResponseEntity.ok((userDetails as User).toResponse())
+    }
 
     @PostMapping
     fun createUser(@RequestBody request: UserCreateRequest): ResponseEntity<UserResponse> {
@@ -18,6 +25,7 @@ class UserController(
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
+        println("Getting user $id")
         val user = userService.getUser(id)
         return ResponseEntity.ok(user)
     }

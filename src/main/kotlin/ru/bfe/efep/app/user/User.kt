@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
 @Table(name = "users")
-class User(
+data class User(
     @Id @GeneratedValue
     val id: Long? = null,
 
