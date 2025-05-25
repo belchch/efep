@@ -8,8 +8,9 @@ data class Region(
     @Id @GeneratedValue
     val id: Long? = null,
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     var code: String,
 
+    @Column(nullable = false)
     var name: String
 )

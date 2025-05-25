@@ -15,18 +15,26 @@ import ru.bfe.efep.app.structelem.toResponse
 data class PhotoDocUpdateRequest(
     val source: String,
     val spotId: Long?,
-    val structElemId: Long?,
-    val materialId: Long?,
     val type: PhotoDocType?,
+    val defectInfo: DefectInfoUpdateRequest?
+)
+
+data class DefectInfoUpdateRequest(
+    val materialId: Long?,
+    val structElemId: Long?,
 )
 
 data class PhotoDocResponse(
     val id: Long,
     val source: String,
     val spot: SpotResponse?,
+    val type: PhotoDocType?,
+    val defectInfo: DefectInfoResponse?
+)
+
+data class DefectInfoResponse(
     val structElem: StructElemResponse?,
     val material: MaterialResponse?,
-    val type: PhotoDocType?
 )
 
 fun PhotoDocUpdateRequest.toEntity(
@@ -39,12 +47,12 @@ fun PhotoDocUpdateRequest.toEntity(
     id = id,
     source = source,
     inspection = inspection,
-    spot = spotId?.let { spotRepository.findByIdOrThrow(spotId) },
-    structElem = ifDefect(type) {
-        structElemId?.let { structElemRepository.findByIdOrThrow(it) }
-    },
-    material = ifDefect(type) {
-        materialId?.let { materialRepository.findByIdOrThrow(it) }
+    spot = spotId?.let { spotRepository.findByIdOrThrow(it) },
+    defectInfo = ifDefect(type) {
+        DefectInfo(
+            material = defectInfo?.materialId?.let { materialRepository.findByIdOrThrow(it) },
+            structElem = defectInfo?.structElemId?.let { structElemRepository.findByIdOrThrow(it) },
+        )
     },
     type = type,
 )
@@ -61,9 +69,13 @@ fun PhotoDoc.toResponse() = PhotoDocResponse(
     id = id!!,
     source = source,
     spot = spot?.toResponse(),
-    structElem = structElem?.toResponse(),
-    material = material?.toResponse(),
     type = type,
+    defectInfo = defectInfo?.toResponse()
+)
+
+fun DefectInfo.toResponse() = DefectInfoResponse(
+    material = material?.toResponse(),
+    structElem = structElem?.toResponse()
 )
 
 private fun SpotRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {

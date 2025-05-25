@@ -23,21 +23,17 @@ class PhotoDoc(
     @ManyToOne(fetch = FetchType.LAZY)
     var spot: Spot? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    var structElem: StructElem? = null,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    var material: Material? = null,
-
     @Enumerated(EnumType.STRING)
-    var type: PhotoDocType? = null
+    var type: PhotoDocType? = null,
+
+    @Embedded
+    var defectInfo: DefectInfo? = null
 ) {
     @PrePersist
     @PreUpdate
     private fun validate() {
         if (type == PhotoDocType.GENERAL_VIEW) {
-            require(material == null) { "Material must be null for GENERAL_VIEW type" }
-            require(structElem == null) { "StructElem must be null for GENERAL_VIEW type" }
+            require(defectInfo == null) { "Defect info must be null for GENERAL_VIEW type" }
         }
     }
 }
@@ -45,3 +41,12 @@ class PhotoDoc(
 enum class PhotoDocType {
     DEFECT, GENERAL_VIEW
 }
+
+@Embeddable
+data class DefectInfo (
+    @ManyToOne(fetch = FetchType.LAZY)
+    var structElem: StructElem? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    var material: Material? = null
+)

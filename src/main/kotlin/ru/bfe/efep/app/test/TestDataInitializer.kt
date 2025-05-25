@@ -44,7 +44,7 @@ class TestDataInitializer(
         }.let { inspectionRepository.saveAll(it) }
 
         // Добавление фото к каждой инспекции
-        inspections.forEachIndexed { index, inspection ->
+        /*inspections.forEachIndexed { index, inspection ->
             // Создаем дефектные фото (DEFECT)
             val defectPhotos = (1..3).map { i ->
                 PhotoDoc(
@@ -80,7 +80,7 @@ class TestDataInitializer(
             )
 
             photoDocRepository.saveAll(defectPhotos + generalPhotos + listOf(untaggedPhoto))
-        }
+        }*/
 
         println("Test data successfully initialized.")
     }
