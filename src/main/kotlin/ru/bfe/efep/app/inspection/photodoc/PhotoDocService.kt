@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.material.MaterialRepository
+import ru.bfe.efep.app.s3.S3Service
 import ru.bfe.efep.app.spot.SpotRepository
 import ru.bfe.efep.app.structelem.StructElemRepository
 
@@ -13,7 +14,8 @@ class PhotoDocService(
     private val inspectionRepository: InspectionRepository,
     private val spotRepository: SpotRepository,
     private val structElemRepository: StructElemRepository,
-    private val materialRepository: MaterialRepository
+    private val materialRepository: MaterialRepository,
+    private val s3Service: S3Service
 ) {
 
     fun createPhotoDoc(inspectionId: Long, request: PhotoDocUpdateRequest): PhotoDocResponse {
@@ -21,14 +23,14 @@ class PhotoDocService(
             request.toEntity(
                 spotRepository, structElemRepository, materialRepository, findInspection(inspectionId)
             )
-        ).toResponse()
+        ).toResponse(s3Service)
     }
 
     fun getPhotoDoc(inspectionId: Long, id: Long): PhotoDocResponse {
         return photoDocRepository.findByIdAndInspectionId(
             id = id,
             inspectionId = inspectionId
-        )?.toResponse()
+        )?.toResponse(s3Service)
             ?: throw notFoundException(
                 id = id,
                 inspectionId = inspectionId
@@ -49,7 +51,7 @@ class PhotoDocService(
             materialIds = materialIds,
             types = types
         )
-        return photoDocRepository.findAll(spec).map { it.toResponse() }
+        return photoDocRepository.findAll(spec).map { it.toResponse(s3Service) }
     }
 
     fun updatePhotoDoc(
@@ -72,7 +74,7 @@ class PhotoDocService(
                 findInspection(inspectionId),
                 id
             )
-        ).toResponse()
+        ).toResponse(s3Service)
     }
 
     fun deletePhotoDoc(id: Long) {

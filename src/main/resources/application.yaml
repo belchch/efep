@@ -13,7 +13,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 jwt:
-  secret: ${JWT_SECRET}
+  secret: 5pDbZ1eR1tXmj5QB0qfqgov8VgTlcNZbkyoSwh3VbIo
   access-token-expiration: 86400000
   refresh-token-expiration: 86400000
 cors:

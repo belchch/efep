@@ -1,5 +1,6 @@
 package ru.bfe.efep.app.s3
 
+import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import org.springframework.stereotype.Service
@@ -27,13 +28,13 @@ class S3Service(
         return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString()
     }
 
-    fun generateDownloadUrl(fileName: String, expirationTimeInMinutes: Long = 5): String {
+    fun generateDownloadUrl(fileName: String, expirationTimeInMinutes: Long = 60): String {
         val expiration = Date()
         expiration.time += TimeUnit.MINUTES.toMillis(expirationTimeInMinutes)
 
         val generatePresignedUrlRequest = GeneratePresignedUrlRequest(
             awsS3Properties.bucketName, fileName
-        ).withExpiration(expiration)
+        ).withExpiration(expiration).withMethod(HttpMethod.GET)
 
         return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString()
     }

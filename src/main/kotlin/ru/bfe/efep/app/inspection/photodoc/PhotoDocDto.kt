@@ -5,6 +5,7 @@ import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.material.MaterialResponse
 import ru.bfe.efep.app.material.toResponse
+import ru.bfe.efep.app.s3.S3Service
 import ru.bfe.efep.app.spot.SpotRepository
 import ru.bfe.efep.app.spot.SpotResponse
 import ru.bfe.efep.app.spot.toResponse
@@ -26,6 +27,7 @@ data class DefectInfoUpdateRequest(
 
 data class PhotoDocResponse(
     val id: Long,
+    val url: String,
     val source: String,
     val spot: SpotResponse?,
     val type: PhotoDocType?,
@@ -65,12 +67,13 @@ private fun <T> ifDefect(type: PhotoDocType?, produce: () -> T): T? {
     }
 }
 
-fun PhotoDoc.toResponse() = PhotoDocResponse(
+fun PhotoDoc.toResponse(s3Service: S3Service) = PhotoDocResponse(
     id = id!!,
     source = source,
     spot = spot?.toResponse(),
     type = type,
-    defectInfo = defectInfo?.toResponse()
+    defectInfo = defectInfo?.toResponse(),
+    url = s3Service.generateDownloadUrl(source)
 )
 
 fun DefectInfo.toResponse() = DefectInfoResponse(
