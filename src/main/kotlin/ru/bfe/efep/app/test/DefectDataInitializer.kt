@@ -23,6 +23,23 @@ class DefectDataInitializer(
 
     @Transactional
     override fun run(args: ApplicationArguments?) {
+        // Список случайных ГОСТов для использования в стандартах
+        val gostStandards = listOf(
+            "ГОСТ 31173-2016 п. 5.3.11",
+            "ГОСТ 30494-2011 п. 4.12",
+            "ГОСТ 30971-2012 п. 6.5.3",
+            "ГОСТ 52748-2007 п. 3.2.4",
+            "ГОСТ 32567-2013 п. 7.1.9",
+            "ГОСТ 23166-99 п. 5.4.2",
+            "ГОСТ 30673-99 п. 8.3.5",
+            "ГОСТ 24866-2014 п. 4.7.1",
+            "ГОСТ 30777-2001 п. 6.2.3",
+            "ГОСТ 30970-2002 п. 5.1.8"
+        )
+
+        // Функция для получения случайного ГОСТа
+        fun randomGost() = gostStandards.random()
+
         // Создаем материалы
         val materials = listOf(
             Material(name = "Дерево"),
@@ -34,9 +51,9 @@ class DefectDataInitializer(
 
         // Создаем структурные элементы
         val structElems = listOf(
-            StructElem(name = "Окно", materials = listOf(materials[0], materials[1])), // Дерево, ПВХ
-            StructElem(name = "Пол", materials = listOf(materials[0], materials[2], materials[3])), // Дерево, Плитка, Ламинат
-            StructElem(name = "Стена", materials = listOf(materials[0], materials[4])) // Дерево, Обои
+            StructElem(name = "Окно", materials = listOf(materials[0], materials[1])),
+            StructElem(name = "Пол", materials = listOf(materials[0], materials[2], materials[3])),
+            StructElem(name = "Стена", materials = listOf(materials[0], materials[4]))
         ).also { structElemRepository.saveAll(it) }
 
         // Создаем дефекты (flaws)
@@ -54,52 +71,52 @@ class DefectDataInitializer(
         val defects = listOf(
             Defect(
                 template = "Царапины на поверхности окна",
-                standard = "Не должно быть царапин длиной более 5 мм",
-                structElem = structElems[0], // Окно
-                material = materials[1], // ПВХ
-                flaw = flaws[0] // Царапина
+                standard = "${randomGost()} - Не должно быть царапин длиной более 5 мм",
+                structElem = structElems[0],
+                material = materials[1],
+                flaw = flaws[0]
             ),
             Defect(
                 template = "Сколы на деревянном окне",
-                standard = "Не должно быть сколов глубиной более 2 мм",
-                structElem = structElems[0], // Окно
-                material = materials[0], // Дерево
-                flaw = flaws[1] // Скол
+                standard = "${randomGost()} - Не должно быть сколов глубиной более 2 мм",
+                structElem = structElems[0],
+                material = materials[0],
+                flaw = flaws[1]
             ),
             Defect(
                 template = "Зазор между стеной и полом",
-                standard = "Зазор не должен превышать 3 мм",
-                structElem = structElems[1], // Пол
-                material = null, // Может быть для любого материала
-                flaw = flaws[2] // Зазор
+                standard = "${randomGost()} - Зазор не должен превышать 3 мм",
+                structElem = structElems[1],
+                material = null,
+                flaw = flaws[2]
             ),
             Defect(
                 template = "Трещины в плитке на полу",
-                standard = "Не должно быть трещин любого размера",
-                structElem = structElems[1], // Пол
-                material = materials[2], // Плитка
-                flaw = flaws[3] // Трещина
+                standard = "${randomGost()} - Не должно быть трещин любого размера",
+                structElem = structElems[1],
+                material = materials[2],
+                flaw = flaws[3]
             ),
             Defect(
                 template = "Отслоение обоев на стене",
-                standard = "Не должно быть участков отслоения более 10 см²",
-                structElem = structElems[2], // Стена
-                material = materials[4], // Обои
-                flaw = flaws[4] // Отслоение
+                standard = "${randomGost()} - Не должно быть участков отслоения более 10 см²",
+                structElem = structElems[2],
+                material = materials[4],
+                flaw = flaws[4]
             ),
             Defect(
                 template = "Деформация деревянного пола",
-                standard = "Прогиб не должен превышать 2 мм на 1 м",
-                structElem = structElems[1], // Пол
-                material = materials[0], // Дерево
-                flaw = flaws[5] // Деформация
+                standard = "${randomGost()} - Прогиб не должен превышать 2 мм на 1 м",
+                structElem = structElems[1],
+                material = materials[0],
+                flaw = flaws[5]
             ),
             Defect(
                 template = "Пятна на ламинате",
-                standard = "Не должно быть пятен площадью более 5 см²",
-                structElem = structElems[1], // Пол
-                material = materials[3], // Ламинат
-                flaw = flaws[6] // Пятно
+                standard = "${randomGost()} - Не должно быть пятен площадью более 5 см²",
+                structElem = structElems[1],
+                material = materials[3],
+                flaw = flaws[6]
             )
         ).also { defectRepository.saveAll(it) }
     }

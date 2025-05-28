@@ -11,6 +11,8 @@ import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.spot.Spot
 import ru.bfe.efep.app.spot.SpotRepository
+import ru.bfe.efep.app.spot.room.Room
+import ru.bfe.efep.app.spot.room.RoomRepository
 import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 import java.time.Instant
@@ -21,19 +23,26 @@ class TestDataInitializer(
     private val materialRepository: MaterialRepository,
     private val structElemRepository: StructElemRepository,
     private val inspectionRepository: InspectionRepository,
-    private val photoDocRepository: PhotoDocRepository
+    private val photoDocRepository: PhotoDocRepository,
+    private val roomRepository: RoomRepository
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
-        // Создание справочников
-        val spots = (1..5).map { Spot(name = "Spot $it") }.let { spotRepository.saveAll(it) }
-        val materials = (1..5).map { Material(name = "Material $it") }.let { materialRepository.saveAll(it) }
-        val structElems = (1..5).map { i ->
-            StructElem(
-                name = "StructElem $i",
-                materials = listOf(materials[i % materials.size])
+
+        spotRepository.saveAll(
+            listOf(
+                Spot(name = "Адресная табличка")
             )
-        }.let { structElemRepository.saveAll(it) }
+        )
+
+        roomRepository.saveAll(
+            listOf(
+                Room(name = "Гостиная"),
+                Room(name = "Кухня"),
+                Room(name = "Туалет"),
+                Room(name = "Прихожая"),
+            )
+        )
 
         // Создание инспекций
         val inspections = (1..2).map { i ->

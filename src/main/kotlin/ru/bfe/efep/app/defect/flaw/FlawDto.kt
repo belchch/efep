@@ -9,3 +9,12 @@ fun Flaw.toResponse() = FlawResponse(
     id = id,
     name = name,
 )
+
+data class FlawUpdateRequest(
+    val name: String
+)
+
+fun FlawUpdateRequest.toEntity(id: Long? = null) = Flaw(
+    id = id,
+    name = name
+)

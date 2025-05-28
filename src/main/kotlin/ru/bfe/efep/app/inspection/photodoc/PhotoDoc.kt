@@ -1,6 +1,8 @@
 package ru.bfe.efep.app.inspection.photodoc
 
 import jakarta.persistence.*
+import ru.bfe.efep.app.defect.Defect
+import ru.bfe.efep.app.defect.flaw.Flaw
 import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.spot.Spot
@@ -48,5 +50,11 @@ data class DefectInfo (
     var structElem: StructElem? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    var material: Material? = null
+    var material: Material? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    var flaw: Flaw? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    var defect: Defect? = null
 )
