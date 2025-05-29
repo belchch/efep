@@ -1,5 +1,7 @@
 package ru.bfe.efep.app.inspection.photodoc
 
+import jakarta.persistence.criteria.Path
+import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.domain.Specification.where
 
@@ -13,17 +15,28 @@ fun buildSearchSpecification(
     return where(Specification<PhotoDoc> { root, query, cb ->
         cb.equal(root.get<Any>("inspection").get<Long>("id"), inspectionId)
     }).and(
-        buildListSpec("spot", spotIds)
+        buildListSpec(listOf("spot"), spotIds)
     ).and(
-        buildListSpec("material", materialIds)
+        buildListSpec(listOf("defectInfo", "material"), materialIds)
     ).and(
-        buildListSpec("structElem", structElemIds)
+        buildListSpec(listOf("defectInfo", "structElem"), structElemIds)
     ).and(
         buildTypeSpec(types)
     )
 }
 
-private fun <T> buildListSpec(property: String, values: List<T?>?): Specification<PhotoDoc> {
+private fun Path<PhotoDoc>.follow(properties: List<String>): Path<Any> {
+    @Suppress("UNCHECKED_CAST")
+    var path: Path<Any> = this as Path<Any>
+
+    for (property in properties) {
+        path = path.get(property)
+    }
+
+    return path
+}
+
+private fun <T> buildListSpec(properties: List<String>, values: List<T?>?): Specification<PhotoDoc> {
     return Specification { root, _, cb ->
         when {
             values == null -> cb.conjunction()
@@ -34,13 +47,15 @@ private fun <T> buildListSpec(property: String, values: List<T?>?): Specificatio
 
                 cb.or(
                     if (notNullValues.isNotEmpty()) {
-                        root.get<Any>(property).get<Any>("id").`in`(notNullValues)
+                        root.follow(properties).get<Any>("id").`in`(notNullValues)
                     } else {
                         cb.disjunction()
                     },
                     if (hasNull) {
-                        cb.isNull(root.get<Any>(property))
+                        println("hasNull")
+                        cb.isNull(root.follow(properties))
                     } else {
+                        println("no hasNull")
                         cb.disjunction()
                     }
                 )

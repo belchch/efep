@@ -20,7 +20,7 @@ import ru.bfe.efep.app.structelem.StructElemResponse
 import ru.bfe.efep.app.structelem.toResponse
 
 data class PhotoDocUpdateRequest(
-    val source: String,
+    val sources: List<String>,
     val spotId: Long?,
     val type: PhotoDocType?,
     val defectInfo: DefectInfoUpdateRequest?,
@@ -35,8 +35,8 @@ data class DefectInfoUpdateRequest(
 
 data class PhotoDocResponse(
     val id: Long,
-    val url: String,
-    val source: String,
+    val urls: List<String>,
+    val sources: List<String>,
     val spot: SpotResponse?,
     val type: PhotoDocType?,
     val defectInfo: DefectInfoResponse?
@@ -56,10 +56,10 @@ fun PhotoDocUpdateRequest.toEntity(
     flawRepository: FlawRepository,
     defectRepository: DefectRepository,
     inspection: Inspection,
-    id: Long? = null,
+    current: PhotoDoc? = null,
 ) = PhotoDoc(
-    id = id,
-    source = source,
+    id = current?.id,
+    sources = sources,
     inspection = inspection,
     spot = spotId?.let { spotRepository.findByIdOrThrow(it) },
     defectInfo = ifDefect(type) {
@@ -70,6 +70,7 @@ fun PhotoDocUpdateRequest.toEntity(
             defect = defectInfo?.defectId?.let { defectRepository.findByIdOrThrow(it) },
         )
     },
+    urls = current?.urls ?: emptyList(),
     type = type,
 )
 
@@ -81,13 +82,13 @@ private fun <T> ifDefect(type: PhotoDocType?, produce: () -> T): T? {
     }
 }
 
-fun PhotoDoc.toResponse(s3Service: S3Service) = PhotoDocResponse(
+fun PhotoDoc.toResponse() = PhotoDocResponse(
     id = id!!,
-    source = source,
+    sources = sources,
     spot = spot?.toResponse(),
     type = type,
     defectInfo = defectInfo?.toResponse(),
-    url = s3Service.generateDownloadUrl(source)
+    urls = urls
 )
 
 fun DefectInfo.toResponse() = DefectInfoResponse(

@@ -15,8 +15,11 @@ class PhotoDoc(
     @Id @GeneratedValue
     val id: Long? = null,
 
-    @Column(nullable = false)
-    var source: String,
+    @Column(nullable = false, columnDefinition = "text[] DEFAULT '{}'")
+    var sources: List<String> = emptyList(),
+
+    @Column(length = 500, nullable = false, columnDefinition = "text[] DEFAULT '{}'")
+    var urls: List<String> = emptyList(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)

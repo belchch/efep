@@ -27,14 +27,24 @@ class PhotoDocService(
             request.toEntity(
                 spotRepository, structElemRepository, materialRepository, flawRepository, defectRepository,findInspection(inspectionId)
             )
-        ).toResponse(s3Service)
+        ).toResponse()
+    }
+
+    fun generatePreSignedUrls(inspectionId: Long) {
+        val photoDocs = photoDocRepository.findByInspectionId(inspectionId)
+
+        for (photoDoc in photoDocs) {
+            photoDoc.urls = photoDoc.sources.map { s3Service.generateDownloadUrl(it)}
+        }
+
+        photoDocRepository.saveAll(photoDocs)
     }
 
     fun getPhotoDoc(inspectionId: Long, id: Long): PhotoDocResponse {
         return photoDocRepository.findByIdAndInspectionId(
             id = id,
             inspectionId = inspectionId
-        )?.toResponse(s3Service)
+        )?.toResponse()
             ?: throw notFoundException(
                 id = id,
                 inspectionId = inspectionId
@@ -55,7 +65,7 @@ class PhotoDocService(
             materialIds = materialIds,
             types = types
         )
-        return photoDocRepository.findAll(spec).map { it.toResponse(s3Service) }
+        return photoDocRepository.findAll(spec).map { it.toResponse() }.sortedBy { it.id }
     }
 
     fun updatePhotoDoc(
@@ -63,7 +73,8 @@ class PhotoDocService(
         inspectionId: Long,
         request: PhotoDocUpdateRequest
     ): PhotoDocResponse {
-        if (!photoDocRepository.existsById(id)) {
+        val current = photoDocRepository.findByIdAndInspectionId(id, inspectionId)
+        if (current == null) {
             throw notFoundException(
                 id = id,
                 inspectionId = inspectionId
@@ -78,9 +89,9 @@ class PhotoDocService(
                 flawRepository,
                 defectRepository,
                 findInspection(inspectionId),
-                id
+                current
             )
-        ).toResponse(s3Service)
+        ).toResponse()
     }
 
     fun deletePhotoDoc(id: Long) {

@@ -31,6 +31,12 @@ class PhotoDocController(
         return ResponseEntity.ok(photoDoc)
     }
 
+    @PostMapping("/generate-presigned-urls")
+    fun generatePresignedUrls(@PathVariable inspectionId: Long): ResponseEntity<PhotoDocResponse> {
+        photoDocService.generatePreSignedUrls(inspectionId)
+        return ResponseEntity.ok().build()
+    }
+
     @GetMapping
     fun searchPhotoDocs(
         @PathVariable inspectionId: Long,
