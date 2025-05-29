@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class EnvConfig {
     init {
-        val dotenv: Dotenv = Dotenv.configure().load()
+        val dotenv: Dotenv = Dotenv.configure().ignoreIfMissing().load()
         dotenv.entries().forEach({ entry -> System.setProperty(entry.getKey(), entry.getValue()) }
         )
     }
