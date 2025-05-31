@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.court.CourtRepository
+import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.judge.JudgeRepository
 import ru.bfe.efep.app.region.RegionRepository
 import ru.bfe.efep.app.user.UserRepository
@@ -17,6 +18,7 @@ class CaseService(
     private val judgeRepository: JudgeRepository,
     private val regionRepository: RegionRepository,
     private val userRepository: UserRepository,
+    private val inspectionRepository: InspectionRepository
 ) {
 
     fun createCase(request: CaseCreateRequest): CaseResponse {
@@ -27,6 +29,7 @@ class CaseService(
                 companyRepository = companyRepository,
                 regionRepository = regionRepository,
                 userRepository = userRepository,
+                inspectionRepository = inspectionRepository
             )
         ).toResponse()
     }
@@ -79,6 +82,7 @@ class CaseService(
                 judgeRepository = judgeRepository,
                 companyRepository = companyRepository,
                 regionRepository = regionRepository,
+                inspectionRepository = inspectionRepository,
             )
         ).toResponse()
     }
@@ -96,6 +100,7 @@ class CaseService(
                 judgeRepository = judgeRepository,
                 companyRepository = companyRepository,
                 regionRepository = regionRepository,
+                inspectionRepository = inspectionRepository,
             )
         ).toResponse()
     }

@@ -3,6 +3,7 @@ package ru.bfe.efep.app.cases
 import jakarta.persistence.*
 import ru.bfe.efep.app.company.Company
 import ru.bfe.efep.app.court.Court
+import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.region.Region
 import ru.bfe.efep.app.user.User
@@ -50,7 +51,13 @@ data class Case(
     var createdBy: User,
 
     @Column(nullable = false)
-    var createdAt: Instant
+    var createdAt: Instant,
+
+    @Column(nullable = false)
+    var deadline: Instant,
+
+    @OneToMany(mappedBy = "case")
+    var inspections: MutableList<Inspection>
 )
 
 enum class CaseStatus {

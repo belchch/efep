@@ -7,6 +7,7 @@ import ru.bfe.efep.app.company.toResponse
 import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.court.CourtRepository
 import ru.bfe.efep.app.court.toResponse
+import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.judge.JudgeRepository
 import ru.bfe.efep.app.judge.toResponse
@@ -23,7 +24,8 @@ fun CaseCreateRequest.toEntity(
     judgeRepository: JudgeRepository,
     companyRepository: CompanyRepository,
     regionRepository: RegionRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    inspectionRepository: InspectionRepository,
 ): Case {
     return Case(
         number = number,
@@ -35,7 +37,9 @@ fun CaseCreateRequest.toEntity(
         company = companyRepository.findByIdOrThrow(companyId),
         region = regionRepository.findByIdOrThrow(regionId),
         createdBy = userRepository.findByIdOrThrow(createdById),
-        createdAt = createdDate
+        createdAt = createdDate,
+        deadline = deadline,
+        inspections = inspectionIds.map { inspectionRepository.findById(it).get() }.toMutableList()
     )
 }
 
@@ -44,7 +48,8 @@ fun CaseUpdateRequest.toEntity(
     courtRepository: CourtRepository,
     judgeRepository: JudgeRepository,
     companyRepository: CompanyRepository,
-    regionRepository: RegionRepository
+    regionRepository: RegionRepository,
+    inspectionRepository: InspectionRepository
 ): Case {
     return Case(
         id = existing.id,
@@ -57,7 +62,9 @@ fun CaseUpdateRequest.toEntity(
         company = companyRepository.findByIdOrThrow(companyId),
         region = regionRepository.findByIdOrThrow(regionId),
         createdBy = existing.createdBy,
-        createdAt = existing.createdAt
+        createdAt = existing.createdAt,
+        deadline = deadline,
+        inspections = inspectionIds.map { inspectionRepository.findById(it).get() }.toMutableList()
     )
 }
 
@@ -66,7 +73,8 @@ fun CasePatchRequest.mergeWithEntity(
     courtRepository: CourtRepository,
     judgeRepository: JudgeRepository,
     companyRepository: CompanyRepository,
-    regionRepository: RegionRepository
+    regionRepository: RegionRepository,
+    inspectionRepository: InspectionRepository
 ): Case {
     return existing.copy(
         number = number ?: existing.number,
@@ -77,7 +85,9 @@ fun CasePatchRequest.mergeWithEntity(
         judge = judgeId?.let { judgeRepository.findByIdOrThrow(it) } ?: existing.judge,
         company = companyId?.let { companyRepository.findByIdOrThrow(it) } ?: existing.company,
         region = regionId?.let { regionRepository.findByIdOrThrow(it) } ?: existing.region,
-        createdBy = existing.createdBy
+        createdBy = existing.createdBy,
+        deadline = deadline ?: existing.deadline,
+        inspections = inspectionIds?.map { inspectionRepository.findById(it).get() }?.toMutableList() ?: mutableListOf(),
     )
 }
 
@@ -92,7 +102,9 @@ fun Case.toResponse() = CaseResponse(
     company = company.toResponse(),
     region = region.toResponse(),
     createdBy = createdBy.toResponse(),
-    createdAt = createdAt
+    createdAt = createdAt,
+    deadline = deadline,
+    inspectionIds = inspections.map { it.id!! }
 )
 
 fun CourtRepository.findByIdOrThrow(id: Long): Court {

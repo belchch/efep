@@ -11,6 +11,7 @@ import ru.bfe.efep.app.company.Company
 import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.court.CourtRepository
+import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.judge.JudgeRepository
 import ru.bfe.efep.app.region.Region
@@ -27,7 +28,8 @@ class CaseDataInitializer(
     private val companyRepository: CompanyRepository,
     private val regionRepository: RegionRepository,
     private val userRepository: UserRepository,
-    private val caseRepository: CaseRepository
+    private val caseRepository: CaseRepository,
+    private val inspectionAndUserDataInitializer: InspectionAndUserDataInitializer
 ) : CommandLineRunner {
 
     @Transactional
@@ -125,10 +127,14 @@ class CaseDataInitializer(
                     company = companies.random(),
                     region = regions.random(),
                     createdBy = users.random(),
-                    createdAt = Instant.now().minusSeconds(Random.nextLong(86400 * 30)) // случайная дата в пределах месяца
+                    createdAt = Instant.now().minusSeconds(Random.nextLong(86400 * 30)),
+                    deadline = Instant.now().plusSeconds(Random.nextLong(86400 * 30)),
+                    inspections = mutableListOf()
                 )
             )
         }
         caseRepository.saveAll(cases)
+
+        inspectionAndUserDataInitializer.run()
     }
 }

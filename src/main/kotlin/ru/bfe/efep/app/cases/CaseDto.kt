@@ -17,7 +17,9 @@ data class CaseCreateRequest(
     val companyId: Long,
     val regionId: Long,
     val createdById: Long,
-    val createdDate: Instant
+    val createdDate: Instant,
+    val deadline: Instant,
+    val inspectionIds: List<Long>
 )
 
 data class CaseUpdateRequest(
@@ -28,7 +30,9 @@ data class CaseUpdateRequest(
     val courtId: Long?,
     val judgeId: Long?,
     val companyId: Long,
-    val regionId: Long
+    val regionId: Long,
+    val deadline: Instant,
+    val inspectionIds: List<Long>
 )
 
 data class CasePatchRequest(
@@ -39,7 +43,9 @@ data class CasePatchRequest(
     val courtId: Long? = null,
     val judgeId: Long? = null,
     val companyId: Long? = null,
-    val regionId: Long? = null
+    val regionId: Long? = null,
+    val deadline: Instant? = null,
+    val inspectionIds: List<Long>? = null,
 )
 
 data class CaseResponse(
@@ -54,4 +60,6 @@ data class CaseResponse(
     val region: RegionResponse,
     val createdBy: UserResponse,
     val createdAt: Instant,
+    val deadline: Instant,
+    val inspectionIds: List<Long>,
 )
