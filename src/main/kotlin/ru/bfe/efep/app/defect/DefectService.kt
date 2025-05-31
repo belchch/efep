@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import ru.bfe.efep.app.defect.flaw.FlawRepository
 import ru.bfe.efep.app.inspection.toResponse
 import ru.bfe.efep.app.material.MaterialRepository
+import ru.bfe.efep.app.standard.StandardRepository
 import ru.bfe.efep.app.structelem.StructElemRepository
 import ru.bfe.efep.app.user.UserRepository
 
@@ -13,7 +14,8 @@ class DefectService(
     private val defectRepository: DefectRepository,
     private val structElemRepository: StructElemRepository,
     private val materialRepository: MaterialRepository,
-    private val flawRepository: FlawRepository
+    private val flawRepository: FlawRepository,
+    private val standardRepository: StandardRepository,
 ) {
 
     fun createDefect(request: DefectUpdateRequest): DefectResponse {
@@ -21,6 +23,7 @@ class DefectService(
             structElemRepository = structElemRepository,
             materialRepository = materialRepository,
             flawRepository = flawRepository,
+            standardRepository = standardRepository,
         )).toResponse()
     }
 
@@ -46,7 +49,9 @@ class DefectService(
         return defectRepository.save(request.toEntity(
             structElemRepository = structElemRepository,
             materialRepository = materialRepository,
-            flawRepository = flawRepository)).toResponse()
+            flawRepository = flawRepository,
+            standardRepository = standardRepository,
+        )).toResponse()
     }
 
     fun deleteDefect(id: Long) {

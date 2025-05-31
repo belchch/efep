@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import ru.bfe.efep.app.defect.flaw.Flaw
 import ru.bfe.efep.app.material.Material
+import ru.bfe.efep.app.standard.Standard
 import ru.bfe.efep.app.structelem.StructElem
 
 @Entity
@@ -21,11 +22,11 @@ data class Defect(
     @Column(length = 500, nullable = false)
     var template: String,
 
-    @Column(length = 500, nullable = false)
-    var standard: String,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    var standard: Standard,
+
+    @ManyToOne(fetch = FetchType.LAZY)
     var structElem: StructElem,
 
     @ManyToOne(fetch = FetchType.LAZY)

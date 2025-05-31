@@ -25,10 +25,9 @@ class CaseController(
 
     @GetMapping
     fun searchCases(
-        @RequestParam number: String?,
+        @RequestParam("search") search: String?,
         @RequestParam("status") statuses: Set<CaseStatus>?,
         @RequestParam("priority") priorities: Set<CasePriority>?,
-        @RequestParam("facilityAddress") facilityAddress: String?,
         @RequestParam("courtId") courtIds: List<Long?>?,
         @RequestParam("judgeId") judgeIds: List<Long?>?,
         @RequestParam("companyId") companyIds: List<Long>?,
@@ -42,10 +41,9 @@ class CaseController(
             if (hasNull == true) listOf(null) + (list ?: emptyList()) else list
 
         val cases = caseService.searchCases(
-            number = number,
+            search = search,
             statuses = statuses,
             priorities = priorities,
-            facilityAddress = facilityAddress,
             courtIds = appendNull(courtIds, courtIdIsNull),
             judgeIds = appendNull(judgeIds, judgeIdIsNull),
             companyIds = companyIds,

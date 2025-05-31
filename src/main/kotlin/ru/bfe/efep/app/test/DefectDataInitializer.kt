@@ -10,6 +10,8 @@ import ru.bfe.efep.app.defect.flaw.Flaw
 import ru.bfe.efep.app.defect.flaw.FlawRepository
 import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.material.MaterialRepository
+import ru.bfe.efep.app.standard.Standard
+import ru.bfe.efep.app.standard.StandardRepository
 import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 
@@ -18,27 +20,25 @@ class DefectDataInitializer(
     private val materialRepository: MaterialRepository,
     private val structElemRepository: StructElemRepository,
     private val flawRepository: FlawRepository,
-    private val defectRepository: DefectRepository
+    private val defectRepository: DefectRepository,
+    private val standardRepository: StandardRepository
 ) : ApplicationRunner {
 
     @Transactional
     override fun run(args: ApplicationArguments?) {
-        // Список случайных ГОСТов для использования в стандартах
-        val gostStandards = listOf(
-            "ГОСТ 31173-2016 п. 5.3.11",
-            "ГОСТ 30494-2011 п. 4.12",
-            "ГОСТ 30971-2012 п. 6.5.3",
-            "ГОСТ 52748-2007 п. 3.2.4",
-            "ГОСТ 32567-2013 п. 7.1.9",
-            "ГОСТ 23166-99 п. 5.4.2",
-            "ГОСТ 30673-99 п. 8.3.5",
-            "ГОСТ 24866-2014 п. 4.7.1",
-            "ГОСТ 30777-2001 п. 6.2.3",
-            "ГОСТ 30970-2002 п. 5.1.8"
-        )
-
-        // Функция для получения случайного ГОСТа
-        fun randomGost() = gostStandards.random()
+        // Создаем стандарты (ГОСТы)
+        val standards = listOf(
+            Standard(name = "ГОСТ 31173-2016 п. 5.3.11", description = "Не должно быть царапин длиной более 5 мм"),
+            Standard(name = "ГОСТ 30494-2011 п. 4.12", description = "Не должно быть сколов глубиной более 2 мм"),
+            Standard(name = "ГОСТ 30971-2012 п. 6.5.3", description = "Зазор не должен превышать 3 мм"),
+            Standard(name = "ГОСТ 52748-2007 п. 3.2.4", description = "Не должно быть трещин любого размера"),
+            Standard(name = "ГОСТ 32567-2013 п. 7.1.9", description = "Не должно быть участков отслоения более 10 см²"),
+            Standard(name = "ГОСТ 23166-99 п. 5.4.2", description = "Прогиб не должен превышать 2 мм на 1 м"),
+            Standard(name = "ГОСТ 30673-99 п. 8.3.5", description = "Не должно быть пятен площадью более 5 см²"),
+            Standard(name = "ГОСТ 24866-2014 п. 4.7.1", description = "Требования к качеству поверхности"),
+            Standard(name = "ГОСТ 30777-2001 п. 6.2.3", description = "Нормы допустимых дефектов"),
+            Standard(name = "ГОСТ 30970-2002 п. 5.1.8", description = "Требования к монтажным зазорам")
+        ).also { standardRepository.saveAll(it) }
 
         // Создаем материалы
         val materials = listOf(
@@ -71,49 +71,49 @@ class DefectDataInitializer(
         val defects = listOf(
             Defect(
                 template = "Царапины на поверхности окна",
-                standard = "${randomGost()} - Не должно быть царапин длиной более 5 мм",
+                standard = standards[0],
                 structElem = structElems[0],
                 material = materials[1],
                 flaw = flaws[0]
             ),
             Defect(
                 template = "Сколы на деревянном окне",
-                standard = "${randomGost()} - Не должно быть сколов глубиной более 2 мм",
+                standard = standards[1],
                 structElem = structElems[0],
                 material = materials[0],
                 flaw = flaws[1]
             ),
             Defect(
                 template = "Зазор между стеной и полом",
-                standard = "${randomGost()} - Зазор не должен превышать 3 мм",
+                standard = standards[2],
                 structElem = structElems[1],
                 material = null,
                 flaw = flaws[2]
             ),
             Defect(
                 template = "Трещины в плитке на полу",
-                standard = "${randomGost()} - Не должно быть трещин любого размера",
+                standard = standards[3],
                 structElem = structElems[1],
                 material = materials[2],
                 flaw = flaws[3]
             ),
             Defect(
                 template = "Отслоение обоев на стене",
-                standard = "${randomGost()} - Не должно быть участков отслоения более 10 см²",
+                standard = standards[4],
                 structElem = structElems[2],
                 material = materials[4],
                 flaw = flaws[4]
             ),
             Defect(
                 template = "Деформация деревянного пола",
-                standard = "${randomGost()} - Прогиб не должен превышать 2 мм на 1 м",
+                standard = standards[5],
                 structElem = structElems[1],
                 material = materials[0],
                 flaw = flaws[5]
             ),
             Defect(
                 template = "Пятна на ламинате",
-                standard = "${randomGost()} - Не должно быть пятен площадью более 5 см²",
+                standard = standards[6],
                 structElem = structElems[1],
                 material = materials[3],
                 flaw = flaws[6]

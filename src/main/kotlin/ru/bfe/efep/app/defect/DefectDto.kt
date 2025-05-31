@@ -7,6 +7,10 @@ import ru.bfe.efep.app.defect.flaw.toResponse
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.material.MaterialResponse
 import ru.bfe.efep.app.material.toResponse
+import ru.bfe.efep.app.standard.Standard
+import ru.bfe.efep.app.standard.StandardRepository
+import ru.bfe.efep.app.standard.StandardResponse
+import ru.bfe.efep.app.standard.toResponse
 import ru.bfe.efep.app.structelem.StructElemRepository
 import ru.bfe.efep.app.structelem.StructElemResponse
 import ru.bfe.efep.app.structelem.toResponse
@@ -14,16 +18,16 @@ import ru.bfe.efep.app.structelem.toResponse
 data class DefectUpdateRequest(
     var id: Long?,
     val template: String,
-    val standard: String,
+    val standardId: Long,
     val structElemId: Long,
     val materialId: Long?,
-    var flawId: Long?
+    var flawId: Long?,
 )
 
 data class DefectResponse(
     val id: Long?,
     val template: String,
-    val standard: String,
+    val standard: StandardResponse,
     val structElem: StructElemResponse,
     val material: MaterialResponse?,
     var flaw: FlawResponse?
@@ -33,11 +37,13 @@ fun DefectUpdateRequest.toEntity(
     structElemRepository: StructElemRepository,
     materialRepository: MaterialRepository,
     flawRepository: FlawRepository,
+    standardRepository: StandardRepository
 ): Defect {
     return Defect(
         id = id,
         template = template,
-        standard = standard,
+        standard = standardRepository.findById(standardId)
+            .orElseThrow { EntityNotFoundException("Standard not found with id: $standardId") },
         structElem = structElemRepository.findById(structElemId)
             .orElseThrow { EntityNotFoundException("StructElem not found with id: $structElemId") },
         material = materialId?.let {
@@ -54,7 +60,7 @@ fun DefectUpdateRequest.toEntity(
 fun Defect.toResponse() = DefectResponse(
     id = id!!,
     template = template,
-    standard = standard,
+    standard = standard.toResponse(),
     structElem = structElem.toResponse(),
     material = material?.toResponse(),
     flaw = flaw?.toResponse()

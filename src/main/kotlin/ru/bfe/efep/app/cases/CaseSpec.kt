@@ -7,10 +7,9 @@ import org.springframework.data.jpa.domain.Specification
 import java.time.Instant
 
 fun buildCaseSpecification(
-    number: String? = null,
+    search: String? = null,
     statuses: Set<CaseStatus>? = null,
     priorities: Set<CasePriority>? = null,
-    facilityAddress: String? = null,
     courtIds: List<Long?>? = null,
     judgeIds: List<Long?>? = null,
     companyIds: List<Long>? = null,
@@ -22,8 +21,7 @@ fun buildCaseSpecification(
     return Specification { root, query, cb ->
         val predicates = mutableListOf<Predicate>()
         
-        addLikePredicate(predicates, number, "number", root, cb)
-        addLikePredicate(predicates, facilityAddress, "facilityAddress", root, cb)
+        addLikePredicate(predicates, search, listOf("number", "facilityAddress"), root, cb)
 
         addEnumPredicate(predicates, statuses, "status", root)
         addEnumPredicate(predicates, priorities, "priority", root)
@@ -44,12 +42,16 @@ fun buildCaseSpecification(
 private fun addLikePredicate(
     predicates: MutableList<Predicate>,
     value: String?,
-    fieldName: String,
+    fieldNames: List<String>,
     root: Root<Case>,
     cb: CriteriaBuilder
 ) {
-    value?.takeIf { it.isNotBlank() }?.let {
-        predicates.add(cb.like(root.get(fieldName), "%${it}%"))
+    value?.takeIf { it.isNotBlank() }?.let { text ->
+        predicates.add(
+            cb.or(
+                *(fieldNames.map { fieldName -> cb.like(root.get(fieldName), "%${text}%") }).toTypedArray()
+            )
+        )
     }
 }
 

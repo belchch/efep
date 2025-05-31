@@ -40,10 +40,9 @@ class CaseService(
     }
 
     fun searchCases(
-        number: String?,
+        search: String?,
         statuses: Set<CaseStatus>?,
         priorities: Set<CasePriority>?,
-        facilityAddress: String?,
         courtIds: List<Long?>?,
         judgeIds: List<Long?>?,
         companyIds: List<Long>?,
@@ -52,10 +51,9 @@ class CaseService(
         createdAtTo: Instant?
     ): List<CaseResponse> {
         val spec = buildCaseSpecification(
-            number = number,
+            search = search,
             statuses = statuses,
             priorities = priorities,
-            facilityAddress = facilityAddress,
             courtIds = courtIds,
             judgeIds = judgeIds,
             companyIds = companyIds,
