@@ -4,13 +4,13 @@ import jakarta.persistence.*
 import ru.bfe.efep.app.defect.Defect
 import ru.bfe.efep.app.defect.flaw.Flaw
 import ru.bfe.efep.app.inspection.Inspection
+import ru.bfe.efep.app.inspection.tr.TechnicalReportRow
 import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.spot.Spot
 import ru.bfe.efep.app.structelem.StructElem
 
 @Entity
 @Table(name = "photo_docs")
-@Inheritance(strategy = InheritanceType.JOINED)
 class PhotoDoc(
     @Id @GeneratedValue
     val id: Long? = null,
@@ -59,5 +59,9 @@ data class DefectInfo (
     var flaw: Flaw? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    var defect: Defect? = null
+    var defect: Defect? = null,
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "technical_report_row_id")
+    var technicalReportRow: TechnicalReportRow? = null,
 )

@@ -112,7 +112,7 @@ class DefectDataInitializer(
                 flaw = flaws[5]
             ),
             Defect(
-                template = "Пятна на ламинате",
+                template = "Пятна на ламинате Пятна на ламинате Пятна на ламинате Пятна на ламинате Пятна на ламинате Пятна на ламинате Пятна на ламинате Пятна на ламинате Пятна на ламинате",
                 standard = standards[6],
                 structElem = structElems[1],
                 material = materials[3],
