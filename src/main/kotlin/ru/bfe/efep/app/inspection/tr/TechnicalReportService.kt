@@ -1,6 +1,7 @@
 package ru.bfe.efep.app.inspection.tr
 
 import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.inspection.photodoc.PhotoDocRepository
@@ -12,33 +13,36 @@ class TechnicalReportService(
     private val inspectionRepository: InspectionRepository,
     private val standardRepository: StandardRepository,
     private val photoDocRepository: PhotoDocRepository,
+    private val technicalReportRowRepository: TechnicalReportRowRepository
 ) {
 
-    fun createTechnicalReport(request: TechnicalReportCreateRequest): TechnicalReportResponse {
-        return technicalReportRepository.save(request.toEntity(inspectionRepository)).toResponse()
+    fun createTechnicalReport(inspectionId: Long, request: TechnicalReportCreateRequest): TechnicalReportResponse {
+        val inspection = inspectionRepository.findById(inspectionId).orElseThrow { EntityNotFoundException("Inspection not found with id: $inspectionId") }
+        return technicalReportRepository.save(request.toEntity(inspection)).toResponse()
     }
 
-    fun getTechnicalReport(id: Long): TechnicalReportResponse {
-        return technicalReportRepository.findById(id).map { it.toResponse() }
-            .orElseThrow { notFoundException(id) }
+    fun findByInspectionId(inspectionId: Long): TechnicalReportResponse? {
+        return technicalReportRepository.findByInspectionId(inspectionId)?.toResponse()
     }
 
-    fun getAllTechnicalReports(): List<TechnicalReportResponse> {
-        return technicalReportRepository.findAll().map { it.toResponse() }
-    }
-
+    @Transactional
     fun updateTechnicalReport(
-        id: Long,
+        inspectionId: Long,
         request: TechnicalReportUpdateRequest
     ): TechnicalReportResponse {
-        val existsing = technicalReportRepository.findById(id).orElseThrow { notFoundException(id) }
+        val existing = technicalReportRepository.findByInspectionId(inspectionId) ?: throw notFoundException(inspectionId)
+        val new = request.toEntity(existing, standardRepository, photoDocRepository)
 
-        return technicalReportRepository.save(request.toEntity(existsing, standardRepository, photoDocRepository)).toResponse()
+        new.technicalReportRows.forEach {
+            technicalReportRowRepository.save(it)
+        }
+
+        return technicalReportRepository.save(new).toResponse()
     }
 
-    fun deleteTechnicalReport(id: Long) {
-        technicalReportRepository.deleteById(id)
+    fun deleteTechnicalReport(inspectionId: Long) {
+        technicalReportRepository.deleteByInspectionId(inspectionId)
     }
 }
 
-private fun notFoundException(id: Long) = EntityNotFoundException("TechnicalReport not found with id: $id")
+private fun notFoundException(id: Long) = EntityNotFoundException("TechnicalReport not found with inspectionId: $id")
