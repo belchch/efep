@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import ru.bfe.efep.app.defect.Defect
 import ru.bfe.efep.app.defect.flaw.Flaw
 import ru.bfe.efep.app.inspection.Inspection
-import ru.bfe.efep.app.inspection.tr.TechnicalReportRow
+import ru.bfe.efep.app.inspection.tr.row.TechnicalReportRow
 import ru.bfe.efep.app.material.Material
 import ru.bfe.efep.app.spot.Spot
 import ru.bfe.efep.app.structelem.StructElem

@@ -4,20 +4,16 @@ import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.inspection.InspectionRepository
-import ru.bfe.efep.app.inspection.photodoc.PhotoDocRepository
-import ru.bfe.efep.app.standard.StandardRepository
 
 @Service
 class TechnicalReportService(
     private val technicalReportRepository: TechnicalReportRepository,
-    private val inspectionRepository: InspectionRepository,
-    private val standardRepository: StandardRepository,
-    private val photoDocRepository: PhotoDocRepository,
-    private val technicalReportRowRepository: TechnicalReportRowRepository
+    private val inspectionRepository: InspectionRepository
 ) {
 
     fun createTechnicalReport(inspectionId: Long, request: TechnicalReportCreateRequest): TechnicalReportResponse {
-        val inspection = inspectionRepository.findById(inspectionId).orElseThrow { EntityNotFoundException("Inspection not found with id: $inspectionId") }
+        val inspection = inspectionRepository.findById(inspectionId)
+            .orElseThrow { EntityNotFoundException("Inspection not found with id: $inspectionId") }
         return technicalReportRepository.save(request.toEntity(inspection)).toResponse()
     }
 
@@ -30,13 +26,9 @@ class TechnicalReportService(
         inspectionId: Long,
         request: TechnicalReportUpdateRequest
     ): TechnicalReportResponse {
-        val existing = technicalReportRepository.findByInspectionId(inspectionId) ?: throw notFoundException(inspectionId)
-        val new = request.toEntity(existing, standardRepository, photoDocRepository)
-
-        new.technicalReportRows.forEach {
-            technicalReportRowRepository.save(it)
-        }
-
+        val existing =
+            technicalReportRepository.findByInspectionId(inspectionId) ?: throw notFoundException(inspectionId)
+        val new = request.toEntity(existing)
         return technicalReportRepository.save(new).toResponse()
     }
 

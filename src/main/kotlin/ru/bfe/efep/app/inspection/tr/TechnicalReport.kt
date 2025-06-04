@@ -1,16 +1,8 @@
 package ru.bfe.efep.app.inspection.tr
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.ForeignKey
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import ru.bfe.efep.app.inspection.Inspection
+import ru.bfe.efep.app.inspection.tr.row.TechnicalReportRow
 
 @Entity
 @Table(name = "technical_reports")
@@ -23,6 +15,6 @@ data class TechnicalReport(
     @JoinColumn(nullable = false)
     var inspection: Inspection,
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "technicalReport", cascade = [CascadeType.ALL])
     var technicalReportRows: MutableList<TechnicalReportRow> = mutableListOf(),
 )
