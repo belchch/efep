@@ -61,6 +61,9 @@ data class DefectInfo (
     @ManyToOne(fetch = FetchType.LAZY)
     var defect: Defect? = null,
 
+    var value: String? = null,
+    var cause: String? = null,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "technical_report_row_id")
     var technicalReportRow: TechnicalReportRow? = null,

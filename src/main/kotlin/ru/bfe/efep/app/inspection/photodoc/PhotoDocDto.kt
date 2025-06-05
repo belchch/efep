@@ -31,6 +31,8 @@ data class DefectInfoUpdateRequest(
     val structElemId: Long?,
     val flawId: Long?,
     val defectId: Long?,
+    val value: String?,
+    val cause: String?
 )
 
 data class PhotoDocResponse(
@@ -46,7 +48,9 @@ data class DefectInfoResponse(
     val structElem: StructElemResponse?,
     val material: MaterialResponse?,
     val flaw: FlawResponse?,
-    val defect: DefectResponse?
+    val defect: DefectResponse?,
+    val value: String?,
+    val cause: String?,
 )
 
 fun PhotoDocUpdateRequest.toEntity(
@@ -68,6 +72,8 @@ fun PhotoDocUpdateRequest.toEntity(
             structElem = defectInfo?.structElemId?.let { structElemRepository.findByIdOrThrow(it) },
             flaw = defectInfo?.flawId?.let { flawRepository.findByIdOrThrow(it) },
             defect = defectInfo?.defectId?.let { defectRepository.findByIdOrThrow(it) },
+            value = defectInfo?.value,
+            cause = defectInfo?.cause
         )
     },
     urls = current?.urls ?: emptyList(),
@@ -96,6 +102,8 @@ fun DefectInfo.toResponse() = DefectInfoResponse(
     structElem = structElem?.toResponse(),
     flaw = flaw?.toResponse(),
     defect = defect?.toResponse(),
+    value = value,
+    cause = cause
 )
 
 private fun SpotRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {

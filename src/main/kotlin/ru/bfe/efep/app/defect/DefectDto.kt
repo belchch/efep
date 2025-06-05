@@ -7,7 +7,6 @@ import ru.bfe.efep.app.defect.flaw.toResponse
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.material.MaterialResponse
 import ru.bfe.efep.app.material.toResponse
-import ru.bfe.efep.app.standard.Standard
 import ru.bfe.efep.app.standard.StandardRepository
 import ru.bfe.efep.app.standard.StandardResponse
 import ru.bfe.efep.app.standard.toResponse
@@ -22,6 +21,8 @@ data class DefectUpdateRequest(
     val structElemId: Long,
     val materialId: Long?,
     var flawId: Long?,
+    var hasValue: Boolean,
+    var hasCause: Boolean,
 )
 
 data class DefectResponse(
@@ -30,7 +31,9 @@ data class DefectResponse(
     val standard: StandardResponse,
     val structElem: StructElemResponse,
     val material: MaterialResponse?,
-    var flaw: FlawResponse?
+    var flaw: FlawResponse?,
+    var hasValue: Boolean,
+    var hasCause: Boolean,
 )
 
 fun DefectUpdateRequest.toEntity(
@@ -63,5 +66,7 @@ fun Defect.toResponse() = DefectResponse(
     standard = standard.toResponse(),
     structElem = structElem.toResponse(),
     material = material?.toResponse(),
-    flaw = flaw?.toResponse()
+    flaw = flaw?.toResponse(),
+    hasValue = hasValue,
+    hasCause = hasCause
 )

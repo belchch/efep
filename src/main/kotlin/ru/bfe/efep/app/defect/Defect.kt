@@ -34,4 +34,7 @@ data class Defect(
 
     @ManyToOne(fetch = FetchType.LAZY)
     var flaw: Flaw? = null,
+
+    var hasValue: Boolean = false,
+    var hasCause: Boolean = false,
 )

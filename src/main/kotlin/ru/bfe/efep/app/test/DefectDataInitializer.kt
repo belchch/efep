@@ -70,11 +70,13 @@ class DefectDataInitializer(
         // Создаем дефекты (defects) с логичными связями
         val defects = listOf(
             Defect(
-                template = "Царапины на поверхности окна",
+                template = "Царапины на поверхности окна {{ПРИЧИНА}} {{ЗНАЧЕНИЕ}}",
                 standard = standards[0],
                 structElem = structElems[0],
                 material = materials[1],
-                flaw = flaws[0]
+                flaw = flaws[0],
+                hasValue = true,
+                hasCause = true
             ),
             Defect(
                 template = "Сколы на деревянном окне",
