@@ -1,6 +1,7 @@
 package ru.bfe.efep.app.inspection.tr.row
 
 import jakarta.persistence.EntityNotFoundException
+import ru.bfe.efep.app.inspection.photodoc.PhotoDoc
 import ru.bfe.efep.app.inspection.photodoc.PhotoDocRepository
 import ru.bfe.efep.app.inspection.photodoc.PhotoDocResponse
 import ru.bfe.efep.app.inspection.photodoc.toResponse
@@ -14,7 +15,8 @@ data class TechnicalReportRowResponse(
     val description: String,
     val standard: StandardResponse,
     val photoDoc: PhotoDocResponse?,
-    val technicalReportId: Long?
+    val technicalReportId: Long?,
+    val used: Boolean
 )
 
 data class TechnicalReportRowUpdateRequest(
@@ -41,10 +43,11 @@ fun TechnicalReportRowUpdateRequest.toEntity(
         .orElseThrow { EntityNotFoundException("TechnicalReport not found with id: $technicalReportId") }
 )
 
-fun TechnicalReportRow.toResponse() = TechnicalReportRowResponse(
+fun TechnicalReportRow.toResponse(photoDocs: List<PhotoDoc>) = TechnicalReportRowResponse(
     id = id,
     description = description,
     standard = standard.toResponse(),
     photoDoc = photoDoc?.toResponse(),
-    technicalReportId = technicalReport.id
+    technicalReportId = technicalReport.id,
+    used = photoDocs.any { it.defectInfo?.technicalReportRow?.id == id }
 )

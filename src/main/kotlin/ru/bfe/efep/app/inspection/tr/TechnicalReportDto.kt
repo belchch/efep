@@ -1,6 +1,8 @@
 package ru.bfe.efep.app.inspection.tr
 
 import ru.bfe.efep.app.inspection.Inspection
+import ru.bfe.efep.app.inspection.photodoc.PhotoDoc
+import ru.bfe.efep.app.inspection.photodoc.PhotoDocRepository
 import ru.bfe.efep.app.inspection.tr.row.TechnicalReportRowResponse
 import ru.bfe.efep.app.inspection.tr.row.toResponse
 
@@ -31,8 +33,8 @@ fun TechnicalReportUpdateRequest.toEntity(
     inspection = original.inspection
 )
 
-fun TechnicalReport.toResponse() = TechnicalReportResponse(
+fun TechnicalReport.toResponse(photoDocs: List<PhotoDoc>) = TechnicalReportResponse(
     id = id!!,
     name = name,
-    rows = technicalReportRows.map { it.toResponse() }.sortedBy { it.id },
+    rows = technicalReportRows.map { it.toResponse(photoDocs) }.sortedBy { it.id },
 )

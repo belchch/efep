@@ -20,20 +20,17 @@ class TechnicalReportRowService(
             technicalReportRepository,
             standardRepository,
             photoDocRepository
-        )).toResponse()
+        )).toResponse(emptyList())
     }
 
-    fun getTechnicalReportRow(id: Long): TechnicalReportRowResponse {
-        return technicalReportRowRepository.findById(id).map { it.toResponse() }
-            .orElseThrow { notFoundException(id) }
-    }
-
-    fun getAllTechnicalReportRows(): List<TechnicalReportRowResponse> {
-        return technicalReportRowRepository.findAll().map { it.toResponse() }
+    fun getAllTechnicalReportRows(inspectionId: Long): List<TechnicalReportRowResponse> {
+        val photoDocs = photoDocRepository.findByInspectionId(inspectionId)
+        return technicalReportRepository.findByInspectionId(inspectionId)?.technicalReportRows?.map { it.toResponse(photoDocs) } ?: emptyList()
     }
 
     fun updateTechnicalReportRow(
         id: Long,
+        inspectionId: Long,
         request: TechnicalReportRowUpdateRequest
     ): TechnicalReportRowResponse {
         if (!technicalReportRowRepository.existsById(id)) {
@@ -43,7 +40,9 @@ class TechnicalReportRowService(
         val new = request.toEntity(technicalReportRepository, standardRepository, photoDocRepository, id)
         linkNewPhotoDoc(new)
 
-        return technicalReportRowRepository.save(new).toResponse()
+        return technicalReportRowRepository.save(new).toResponse(
+            photoDocRepository.findByInspectionId(inspectionId)
+        )
     }
 
     private fun linkNewPhotoDoc(row: TechnicalReportRow) {
@@ -53,7 +52,6 @@ class TechnicalReportRowService(
             }
 
             row.photoDoc!!.defectInfo!!.technicalReportRow = row
-            photoDocRepository.save(row.photoDoc!!)
         }
     }
 

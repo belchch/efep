@@ -8,10 +8,11 @@ import ru.bfe.efep.app.defect.flaw.FlawResponse
 import ru.bfe.efep.app.defect.flaw.toResponse
 import ru.bfe.efep.app.defect.toResponse
 import ru.bfe.efep.app.inspection.Inspection
+import ru.bfe.efep.app.inspection.tr.row.TechnicalReportRowRepository
+import ru.bfe.efep.app.inspection.tr.row.TechnicalReportRowResponse
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.material.MaterialResponse
 import ru.bfe.efep.app.material.toResponse
-import ru.bfe.efep.app.s3.S3Service
 import ru.bfe.efep.app.spot.SpotRepository
 import ru.bfe.efep.app.spot.SpotResponse
 import ru.bfe.efep.app.spot.toResponse
@@ -32,7 +33,8 @@ data class DefectInfoUpdateRequest(
     val flawId: Long?,
     val defectId: Long?,
     val value: String?,
-    val cause: String?
+    val cause: String?,
+    val technicalReportRowId: Long?,
 )
 
 data class PhotoDocResponse(
@@ -51,6 +53,7 @@ data class DefectInfoResponse(
     val defect: DefectResponse?,
     val value: String?,
     val cause: String?,
+    val technicalReportRowId: Long?,
 )
 
 fun PhotoDocUpdateRequest.toEntity(
@@ -59,6 +62,7 @@ fun PhotoDocUpdateRequest.toEntity(
     materialRepository: MaterialRepository,
     flawRepository: FlawRepository,
     defectRepository: DefectRepository,
+    technicalReportRowRepository: TechnicalReportRowRepository,
     inspection: Inspection,
     current: PhotoDoc? = null,
 ) = PhotoDoc(
@@ -73,7 +77,8 @@ fun PhotoDocUpdateRequest.toEntity(
             flaw = defectInfo?.flawId?.let { flawRepository.findByIdOrThrow(it) },
             defect = defectInfo?.defectId?.let { defectRepository.findByIdOrThrow(it) },
             value = defectInfo?.value,
-            cause = defectInfo?.cause
+            cause = defectInfo?.cause,
+            technicalReportRow = defectInfo?.technicalReportRowId?.let { technicalReportRowRepository.findByIdOrThrow(it) },
         )
     },
     urls = current?.urls ?: emptyList(),
@@ -103,7 +108,8 @@ fun DefectInfo.toResponse() = DefectInfoResponse(
     flaw = flaw?.toResponse(),
     defect = defect?.toResponse(),
     value = value,
-    cause = cause
+    cause = cause,
+    technicalReportRowId = technicalReportRow?.id
 )
 
 private fun SpotRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {
@@ -119,9 +125,13 @@ private fun MaterialRepository.findByIdOrThrow(id: Long) = findById(id).orElseTh
 }
 
 private fun FlawRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {
-    EntityNotFoundException("Material with id $id not found")
+    EntityNotFoundException("Flaw with id $id not found")
 }
 
 private fun DefectRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {
-    EntityNotFoundException("Material with id $id not found")
+    EntityNotFoundException("Defect with id $id not found")
+}
+
+private fun TechnicalReportRowRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {
+    EntityNotFoundException("TechnicalReport with id $id not found")
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import ru.bfe.efep.app.defect.DefectRepository
 import ru.bfe.efep.app.defect.flaw.FlawRepository
 import ru.bfe.efep.app.inspection.InspectionRepository
+import ru.bfe.efep.app.inspection.tr.row.TechnicalReportRowRepository
 import ru.bfe.efep.app.material.MaterialRepository
 import ru.bfe.efep.app.s3.S3Service
 import ru.bfe.efep.app.spot.SpotRepository
@@ -19,13 +20,14 @@ class PhotoDocService(
     private val materialRepository: MaterialRepository,
     private val flawRepository: FlawRepository,
     private val defectRepository: DefectRepository,
+    private val technicalReportRowRepository: TechnicalReportRowRepository,
     private val s3Service: S3Service
 ) {
 
     fun createPhotoDoc(inspectionId: Long, request: PhotoDocUpdateRequest): PhotoDocResponse {
         return photoDocRepository.save(
             request.toEntity(
-                spotRepository, structElemRepository, materialRepository, flawRepository, defectRepository,findInspection(inspectionId)
+                spotRepository, structElemRepository, materialRepository, flawRepository, defectRepository, technicalReportRowRepository,findInspection(inspectionId)
             )
         ).toResponse()
     }
@@ -88,6 +90,7 @@ class PhotoDocService(
                 materialRepository,
                 flawRepository,
                 defectRepository,
+                technicalReportRowRepository,
                 findInspection(inspectionId),
                 current
             )

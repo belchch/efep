@@ -4,21 +4,27 @@ import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.inspection.InspectionRepository
+import ru.bfe.efep.app.inspection.photodoc.PhotoDocRepository
 
 @Service
 class TechnicalReportService(
     private val technicalReportRepository: TechnicalReportRepository,
-    private val inspectionRepository: InspectionRepository
+    private val inspectionRepository: InspectionRepository,
+    private val photoDocRepository: PhotoDocRepository
 ) {
 
     fun createTechnicalReport(inspectionId: Long, request: TechnicalReportCreateRequest): TechnicalReportResponse {
         val inspection = inspectionRepository.findById(inspectionId)
             .orElseThrow { EntityNotFoundException("Inspection not found with id: $inspectionId") }
-        return technicalReportRepository.save(request.toEntity(inspection)).toResponse()
+        return technicalReportRepository.save(request.toEntity(inspection)).toResponse(
+            photoDocRepository.findByInspectionId(inspectionId)
+        )
     }
 
     fun findByInspectionId(inspectionId: Long): TechnicalReportResponse? {
-        return technicalReportRepository.findByInspectionId(inspectionId)?.toResponse()
+        return technicalReportRepository.findByInspectionId(inspectionId)?.toResponse(
+            photoDocRepository.findByInspectionId(inspectionId)
+        )
     }
 
     @Transactional
@@ -29,7 +35,9 @@ class TechnicalReportService(
         val existing =
             technicalReportRepository.findByInspectionId(inspectionId) ?: throw notFoundException(inspectionId)
         val new = request.toEntity(existing)
-        return technicalReportRepository.save(new).toResponse()
+        return technicalReportRepository.save(new).toResponse(
+            photoDocRepository.findByInspectionId(inspectionId)
+        )
     }
 
     fun deleteTechnicalReport(inspectionId: Long) {
