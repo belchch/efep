@@ -1,6 +1,7 @@
 package ru.bfe.efep.app.inspection.photodoc
 
 import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.defect.DefectRepository
 import ru.bfe.efep.app.defect.flaw.FlawRepository
@@ -103,6 +104,15 @@ class PhotoDocService(
 
     private fun findInspection(inspectionId: Long) = inspectionRepository.findById(inspectionId).orElseThrow {
         EntityNotFoundException("Inspection with id $inspectionId not found")
+    }
+
+    @Transactional
+    fun unionPhotoDocs(inspectionId: Long, unionRequest: PhotoDocUnionRequest) {
+        val target = photoDocRepository.findById(unionRequest.targetId).get()
+        val others = photoDocRepository.findAllById(unionRequest.otherIds)
+        target.sources = target.sources + others.flatMap { it.sources }
+        photoDocRepository.deleteAllById(others.map { it.id })
+        generatePreSignedUrls(inspectionId)
     }
 }
 

@@ -81,4 +81,15 @@ class PhotoDocController(
         photoDocService.deletePhotoDoc(id)
         return ResponseEntity.noContent().build()
     }
+
+    @PostMapping("/union")
+    fun unionPhotoDocs(@PathVariable inspectionId: Long, @RequestBody request: PhotoDocUnionRequest): ResponseEntity<Void> {
+        photoDocService.unionPhotoDocs(inspectionId, request)
+        return ResponseEntity.ok().build()
+    }
 }
+
+data class PhotoDocUnionRequest(
+    val targetId: Long,
+    val otherIds: List<Long>,
+)
