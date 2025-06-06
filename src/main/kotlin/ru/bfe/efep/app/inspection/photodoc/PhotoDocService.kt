@@ -123,7 +123,9 @@ class PhotoDocService(
             photoDoc.copy(id = null, sources = listOf(it))
         }
 
-        photoDocRepository.saveAll(ungrouped)
+        photoDoc.sources = photoDoc.sources.take(1)
+
+        photoDocRepository.saveAll(ungrouped + photoDoc)
         generatePreSignedUrls(inspectionId)
     }
 }
