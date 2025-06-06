@@ -11,7 +11,7 @@ import ru.bfe.efep.app.structelem.StructElem
 
 @Entity
 @Table(name = "photo_docs")
-class PhotoDoc(
+data class PhotoDoc(
     @Id @GeneratedValue
     val id: Long? = null,
 

@@ -107,11 +107,23 @@ class PhotoDocService(
     }
 
     @Transactional
-    fun unionPhotoDocs(inspectionId: Long, unionRequest: PhotoDocUnionRequest) {
+    fun groupPhotoDocs(inspectionId: Long, unionRequest: PhotoDocUnionRequest) {
         val target = photoDocRepository.findById(unionRequest.targetId).get()
         val others = photoDocRepository.findAllById(unionRequest.otherIds)
         target.sources = target.sources + others.flatMap { it.sources }
         photoDocRepository.deleteAllById(others.map { it.id })
+        generatePreSignedUrls(inspectionId)
+    }
+
+    @Transactional
+    fun ungroupPhotoDocs(inspectionId: Long, photoDocId: Long) {
+        val photoDoc = photoDocRepository.findById(photoDocId).get()
+
+        val ungrouped = photoDoc.sources.drop(1).map {
+            photoDoc.copy(id = null, sources = listOf(it))
+        }
+
+        photoDocRepository.saveAll(ungrouped)
         generatePreSignedUrls(inspectionId)
     }
 }

@@ -78,13 +78,20 @@ class PhotoDocController(
         @PathVariable inspectionId: Long,
         @PathVariable id: Long
     ): ResponseEntity<Void> {
+        println("delete")
         photoDocService.deletePhotoDoc(id)
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/union")
-    fun unionPhotoDocs(@PathVariable inspectionId: Long, @RequestBody request: PhotoDocUnionRequest): ResponseEntity<Void> {
-        photoDocService.unionPhotoDocs(inspectionId, request)
+    @PostMapping("/group")
+    fun groupPhotoDocs(@PathVariable inspectionId: Long, @RequestBody request: PhotoDocUnionRequest): ResponseEntity<Void> {
+        photoDocService.groupPhotoDocs(inspectionId, request)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/{id}/ungroup")
+    fun ungroupPhotoDocs(@PathVariable inspectionId: Long, @PathVariable id: Long): ResponseEntity<Void> {
+        photoDocService.ungroupPhotoDocs(inspectionId, id)
         return ResponseEntity.ok().build()
     }
 }
