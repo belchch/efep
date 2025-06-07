@@ -40,6 +40,7 @@ class TechnicalReportService(
         )
     }
 
+    @Transactional
     fun deleteTechnicalReport(inspectionId: Long) {
         technicalReportRepository.deleteByInspectionId(inspectionId)
     }
