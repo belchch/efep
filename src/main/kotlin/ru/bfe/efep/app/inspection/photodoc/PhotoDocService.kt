@@ -120,7 +120,7 @@ class PhotoDocService(
         val photoDoc = photoDocRepository.findById(photoDocId).get()
 
         val ungrouped = photoDoc.sources.drop(1).map {
-            photoDoc.copy(id = null, sources = listOf(it))
+            photoDoc.copy(id = null, sources = listOf(it), defectInfo = null)
         }
 
         photoDoc.sources = photoDoc.sources.take(1)
