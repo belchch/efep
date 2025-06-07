@@ -54,6 +54,7 @@ data class DefectInfoResponse(
     val value: String?,
     val cause: String?,
     val technicalReportRowId: Long?,
+    val description: String?
 )
 
 fun PhotoDocUpdateRequest.toEntity(
@@ -99,7 +100,7 @@ fun PhotoDoc.toResponse() = PhotoDocResponse(
     spot = spot?.toResponse(),
     type = type,
     defectInfo = defectInfo?.toResponse(),
-    urls = urls
+    urls = urls,
 )
 
 fun DefectInfo.toResponse() = DefectInfoResponse(
@@ -109,7 +110,8 @@ fun DefectInfo.toResponse() = DefectInfoResponse(
     defect = defect?.toResponse(),
     value = value,
     cause = cause,
-    technicalReportRowId = technicalReportRow?.id
+    technicalReportRowId = technicalReportRow?.id,
+    description = applyTemplate()
 )
 
 private fun SpotRepository.findByIdOrThrow(id: Long) = findById(id).orElseThrow {
