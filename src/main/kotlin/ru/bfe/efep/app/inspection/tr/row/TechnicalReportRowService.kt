@@ -16,11 +16,7 @@ class TechnicalReportRowService(
 ) {
 
     fun createTechnicalReportRow(request: TechnicalReportRowUpdateRequest): TechnicalReportRowResponse {
-        return technicalReportRowRepository.save(request.toEntity(
-            technicalReportRepository,
-            standardRepository,
-            photoDocRepository
-        )).toResponse(emptyList())
+        return technicalReportRowRepository.save(request.convertToEntityAndLink()).toResponse(emptyList())
     }
 
     fun getAllTechnicalReportRows(inspectionId: Long): List<TechnicalReportRowResponse> {
@@ -37,10 +33,7 @@ class TechnicalReportRowService(
             throw notFoundException(id)
         }
 
-        val new = request.toEntity(technicalReportRepository, standardRepository, photoDocRepository, id)
-        linkNewPhotoDoc(new)
-
-        return technicalReportRowRepository.save(new).toResponse(
+        return technicalReportRowRepository.save(request.convertToEntityAndLink(id)).toResponse(
             photoDocRepository.findByInspectionId(inspectionId)
         )
     }
@@ -53,6 +46,12 @@ class TechnicalReportRowService(
 
             row.photoDoc!!.defectInfo!!.technicalReportRow = row
         }
+    }
+
+    private fun TechnicalReportRowUpdateRequest.convertToEntityAndLink(id: Long? = null): TechnicalReportRow {
+        val entity = toEntity(technicalReportRepository, standardRepository, photoDocRepository, id)
+        linkNewPhotoDoc(entity)
+        return entity
     }
 
     fun deleteTechnicalReportRow(id: Long) {
