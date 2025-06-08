@@ -3,7 +3,7 @@ package ru.bfe.efep.app.defect.report.photo
 data class DefectReportPhotoResponse(
     val id: Long,
     val source: String,
-    val url: String?,
+    var url: String?,
     val used: Boolean
 )
 

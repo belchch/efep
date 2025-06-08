@@ -15,8 +15,8 @@ import ru.bfe.efep.app.inspection.photodoc.PhotoDocRepository
 import ru.bfe.efep.app.inspection.photodoc.PhotoDocType
 import ru.bfe.efep.app.inspection.photodoc.applyTemplate
 import ru.bfe.efep.app.inspection.photodoc.standard
+import ru.bfe.efep.app.s3.S3Service
 import ru.bfe.efep.app.standard.fullName
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class DefectReportService(
@@ -27,6 +27,7 @@ class DefectReportService(
     private val photoDocRepository: PhotoDocRepository,
     private val inspectionRepository: InspectionRepository,
     private val defectReportRepository: DefectReportRepository,
+    private val s3Service: S3Service
 ) {
 
     @Transactional
@@ -62,7 +63,7 @@ class DefectReportService(
                     val row = defectReportRowRepository.save(
                         DefectReportRow(
                             technicalReport = photoDoc.defectInfo!!.technicalReportRow?.description,
-                            defect = photoDoc.defectInfo!!.applyTemplate(),
+                            defect = photoDoc.defectInfo!!.applyTemplate() ?: "Не выявлено",
                             standard = photoDoc.defectInfo!!.standard()?.fullName(),
                             structElem = structElem,
                         )
@@ -86,8 +87,14 @@ class DefectReportService(
 
     @Transactional
     fun getReport(inspectionId: Long): DefectReportResponse? {
-        return defectReportRepository.findAllByInspectionId(inspectionId).map {
+        val report = defectReportRepository.findAllByInspectionId(inspectionId)
+
+        return report.map {
             it.toResponse()
-        }.firstOrNull()
+        }.firstOrNull()?.also {
+            it.spots.flatMap { it.structElems.flatMap { it.rows }.flatMap { it.photos } }.forEach {
+                it.url = s3Service.generateDownloadUrl(it.source)
+            }
+        }
     }
 }

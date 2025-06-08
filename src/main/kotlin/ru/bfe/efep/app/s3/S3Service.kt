@@ -16,7 +16,7 @@ class S3Service(
     init {
         println(awsS3Properties)
     }
-    fun generateUploadUrl(fileName: String, expirationTimeInMinutes: Long = 5): String {
+    fun generateUploadUrl(fileName: String, expirationTimeInMinutes: Long = 60): String {
         val expiration = Date()
         expiration.time += TimeUnit.MINUTES.toMillis(expirationTimeInMinutes)
 
