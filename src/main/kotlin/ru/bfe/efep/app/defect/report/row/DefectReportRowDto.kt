@@ -8,7 +8,8 @@ data class DefectReportRowResponse(
     val technicalReport: String?,
     val defect: String?,
     val standard: String?,
-    val photos: List<DefectReportPhotoResponse>
+    val photos: List<DefectReportPhotoResponse>,
+    val sortOrder: Int,
 )
 
 fun DefectReportRow.toResponse() = DefectReportRowResponse(
@@ -16,5 +17,6 @@ fun DefectReportRow.toResponse() = DefectReportRowResponse(
     technicalReport = technicalReport,
     defect = defect,
     standard = standard,
-    photos = photos.map { it.toResponse() }
+    photos = photos.map { it.toResponse() },
+    sortOrder = sortOrder
 )

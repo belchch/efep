@@ -6,11 +6,13 @@ import ru.bfe.efep.app.defect.report.structelem.toResponse
 data class DefectReportSpotResponse(
     val id: Long,
     val text: String,
-    val structElems: List<DefectReportStructElemResponse>
+    val structElems: List<DefectReportStructElemResponse>,
+    val sortOrder: Int,
 )
 
 fun DefectReportSpot.toResponse() = DefectReportSpotResponse(
     id = id!!,
     text = text,
-    structElems = structElems.map { it.toResponse() }
+    structElems = structElems.map { it.toResponse() },
+    sortOrder = sortOrder
 )

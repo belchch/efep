@@ -10,7 +10,11 @@ data class DefectReportStructElem(
     @Id @GeneratedValue
     val id: Long? = null,
 
-    var text: String,
+    @Column(nullable = false)
+    val text: String,
+
+    @Column(nullable = false)
+    val sortOrder: Int,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)

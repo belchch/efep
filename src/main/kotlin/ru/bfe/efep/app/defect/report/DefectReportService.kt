@@ -36,52 +36,62 @@ class DefectReportService(
 
         val inspection = inspectionRepository.findById(inspectionId).get()
 
-        val report = defectReportRepository.save(DefectReport(
-            inspection = inspection
-        ))
+        val report = defectReportRepository.save(
+            DefectReport(
+                inspection = inspection
+            )
+        )
 
         val defects = photoDocRepository.findByInspectionId(inspectionId).filter {
             it.type == PhotoDocType.DEFECT &&
                     it.defectInfo != null &&
                     it.spot != null &&
                     (it.defectInfo?.defect != null || it.defectInfo?.technicalReportRow != null)
-        }
+        }.sortedBy { it.id }
 
-        defects.groupBy { it.spot!! }.forEach { spotEntry ->
-            val spot = defectReportSpotRepository.save(DefectReportSpot(
-                text = spotEntry.key.name,
-                report = report,
-            ))
+        defects.groupBy { it.spot!! }.toList().forEachIndexed { spotIndex, (spotKey, spotValue) ->
+            val spot = defectReportSpotRepository.save(
+                DefectReportSpot(
+                    text = spotKey.name,
+                    report = report,
+                    sortOrder = spotIndex
+                )
+            )
 
-            spotEntry.value.groupBy { it.defectInfo!!.structElem }.forEach { structElemEntry ->
-                val structElem = defectReportStructElemRepository.save(DefectReportStructElem(
-                    text = structElemEntry.key!!.name,
-                    spot = spot
-                ))
-
-                structElemEntry.value.forEach { photoDoc ->
-                    val row = defectReportRowRepository.save(
-                        DefectReportRow(
-                            technicalReport = photoDoc.defectInfo!!.technicalReportRow?.description,
-                            defect = photoDoc.defectInfo!!.applyTemplate() ?: "Не выявлено",
-                            standard = photoDoc.defectInfo!!.standard()?.fullName(),
-                            structElem = structElem,
+            spotValue.groupBy { it.defectInfo!!.structElem }.toList()
+                .forEachIndexed { structElemIndex, (structElemKey, structElemValue) ->
+                    val structElem = defectReportStructElemRepository.save(
+                        DefectReportStructElem(
+                            text = structElemKey!!.name,
+                            spot = spot,
+                            sortOrder = structElemIndex
                         )
                     )
 
-                    photoDoc.sources.withIndex().forEach { (index, source) ->
-                        defectReportPhotoRepository.save(
-                            DefectReportPhoto(
-                                source = source,
-                                row = row,
-                                used = index in listOf(0, 1)
+                    structElemValue.forEachIndexed { photoDocIndex, photoDoc ->
+                        val row = defectReportRowRepository.save(
+                            DefectReportRow(
+                                technicalReport = photoDoc.defectInfo!!.technicalReportRow?.description,
+                                defect = photoDoc.defectInfo!!.applyTemplate() ?: "Не выявлено",
+                                standard = photoDoc.defectInfo!!.standard()?.fullName(),
+                                structElem = structElem,
+                                sortOrder = photoDocIndex
                             )
                         )
+
+                        photoDoc.sources.withIndex().forEach { (index, source) ->
+                            defectReportPhotoRepository.save(
+                                DefectReportPhoto(
+                                    source = source,
+                                    row = row,
+                                    used = index in listOf(0, 1)
+                                )
+                            )
+                        }
                     }
+
+
                 }
-
-
-            }
         }
     }
 
@@ -92,9 +102,16 @@ class DefectReportService(
         return report.map {
             it.toResponse()
         }.firstOrNull()?.also {
-            it.spots.flatMap { it.structElems.flatMap { it.rows }.flatMap { it.photos } }.forEach {
-                it.url = s3Service.generateDownloadUrl(it.source)
-            }
+            it.spots
+                .sortedBy { it.sortOrder }
+                .flatMap {
+                    it.structElems.sortedBy { it.sortOrder }
+                        .flatMap { it.rows.sortedBy { it.sortOrder } }
+                        .flatMap { it.photos }
+                }
+                .forEach {
+                    it.url = s3Service.generateDownloadUrl(it.source)
+                }
         }
     }
 }

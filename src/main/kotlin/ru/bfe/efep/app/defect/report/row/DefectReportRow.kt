@@ -16,6 +16,9 @@ data class DefectReportRow(
 
     var standard: String? = null,
 
+    @Column(nullable = false)
+    val sortOrder: Int,
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     var structElem: DefectReportStructElem,
