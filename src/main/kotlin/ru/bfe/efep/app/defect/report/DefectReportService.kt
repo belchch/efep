@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.defect.report.photo.DefectReportPhoto
 import ru.bfe.efep.app.defect.report.photo.DefectReportPhotoRepository
+import ru.bfe.efep.app.defect.report.photo.DefectReportPhotoResponse
+import ru.bfe.efep.app.defect.report.photo.toResponse
 import ru.bfe.efep.app.defect.report.row.DefectReportRow
 import ru.bfe.efep.app.defect.report.row.DefectReportRowRepository
 import ru.bfe.efep.app.defect.report.spot.DefectReportSpot
@@ -98,7 +100,17 @@ class DefectReportService(
     }
 
     fun getReport(inspectionId: Long): DefectReportResponse? {
-        val report = defectReportRepository.findAllByInspectionId(inspectionId).map {
+        val reportEntity = defectReportRepository.findAllByInspectionId(inspectionId)
+
+        val photos = reportEntity.flatMap { re -> re.spots.flatMap { spot -> spot.structElems.flatMap { se -> se.rows.flatMap { row -> row.photos } } } }
+
+        photos.forEach {
+            it.url = s3Service.generateDownloadUrl(it.source)
+        }
+
+        defectReportPhotoRepository.saveAll(photos)
+
+        val report = reportEntity.map {
             it.toResponse()
         }.firstOrNull()
 
@@ -111,14 +123,29 @@ class DefectReportService(
                 structElem.rows.sortBy { it.sortOrder }
 
                 structElem.rows.forEach { row ->
-                    row.photos.forEach { photo ->
-                        photo.url = s3Service.generateDownloadUrl(photo.source)
-                    }
+                    row.photos.sortBy { it.id }
                 }
             }
         }
 
         return report
+    }
+
+    @Transactional
+    fun usePhoto(photoId: Long, use: Boolean, scope: Int): List<DefectReportPhotoResponse> {
+        val photo = defectReportPhotoRepository.findById(photoId).get()
+        val usedPhotos = photo.row.photos.filter { it.used }
+
+        if (use && usedPhotos.size >= scope) {
+            val firstUsed = usedPhotos.first()
+            firstUsed.used = false
+            defectReportPhotoRepository.save(firstUsed)
+        }
+
+        photo.used = use
+        defectReportPhotoRepository.save(photo)
+
+        return photo.row.photos.map { it.toResponse() }.sortedBy { it.id }
     }
 
     @Transactional

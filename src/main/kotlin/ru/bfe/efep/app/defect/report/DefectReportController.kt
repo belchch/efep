@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import ru.bfe.efep.app.defect.report.photo.DefectReportPhoto
+import ru.bfe.efep.app.defect.report.photo.DefectReportPhotoResponse
 
 @RestController
 @RequestMapping("/api/defect-report")
@@ -41,5 +43,11 @@ class DefectReportController(
     fun moveRow(@RequestParam rowId: Long, fromIndex: Int, toIndex: Int): ResponseEntity<*> {
         defectReportService.moveRow(rowId, fromIndex, toIndex)
         return ResponseEntity.ok().build<Any>()
+    }
+
+    @PostMapping("/use-photo")
+    fun usePhoto(@RequestParam photoId: Long, @RequestParam use: Boolean, @RequestParam scope: Int): ResponseEntity<List<DefectReportPhotoResponse>> {
+        val result = defectReportService.usePhoto(photoId, use, scope)
+        return ResponseEntity.ok().body(result)
     }
 }

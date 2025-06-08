@@ -9,7 +9,7 @@ import ru.bfe.efep.app.user.User
 import ru.bfe.efep.app.user.UserRepository
 import java.time.Instant
 
-
+@Component
 class InspectionAndUserDataInitializer(
     private val userRepository: UserRepository,
     private val inspectionRepository: InspectionRepository,

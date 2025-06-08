@@ -15,7 +15,7 @@ import ru.bfe.efep.app.standard.StandardRepository
 import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 
-
+@Component
 class DefectDataInitializer(
     private val materialRepository: MaterialRepository,
     private val structElemRepository: StructElemRepository,

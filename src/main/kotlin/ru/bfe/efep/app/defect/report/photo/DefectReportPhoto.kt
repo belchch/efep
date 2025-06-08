@@ -1,5 +1,6 @@
 package ru.bfe.efep.app.defect.report.photo
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -16,6 +17,7 @@ data class DefectReportPhoto(
     val id: Long? = null,
 
     var source: String,
+    @Column(length = 1000)
     var url: String? = null,
     var used: Boolean,
 
