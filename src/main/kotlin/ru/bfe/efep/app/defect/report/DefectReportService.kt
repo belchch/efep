@@ -114,4 +114,12 @@ class DefectReportService(
                 }
         }
     }
+
+    @Transactional
+    fun swapSpots( oneId: Long, anotherId: Long) {
+        val one = defectReportSpotRepository.findById(oneId).get()
+        val another = defectReportSpotRepository.findById(anotherId).get()
+        one.sortOrder = another.sortOrder.also { another.sortOrder = one.sortOrder }
+        defectReportSpotRepository.saveAll(listOf(one, another))
+    }
 }

@@ -24,4 +24,10 @@ class DefectReportController(
         val response = defectReportService.getReport(inspectionId)
         return ResponseEntity(response, HttpStatus.OK)
     }
+
+    @PostMapping("/swap-spots")
+    fun swapSpots(@RequestParam oneId: Long, @RequestParam anotherId: Long): ResponseEntity<*> {
+        defectReportService.swapSpots(oneId, anotherId)
+        return ResponseEntity.ok().build<Any>()
+    }
 }

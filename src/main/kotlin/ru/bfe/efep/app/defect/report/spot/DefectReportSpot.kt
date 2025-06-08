@@ -18,7 +18,7 @@ data class DefectReportSpot(
     val text: String,
 
     @Column(nullable = false)
-    val sortOrder: Int,
+    var sortOrder: Int,
 
     @OneToMany(mappedBy = "spot", cascade = [CascadeType.ALL])
     var structElems: MutableList<DefectReportStructElem> = mutableListOf(),
