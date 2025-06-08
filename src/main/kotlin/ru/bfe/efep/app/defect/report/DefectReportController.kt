@@ -25,9 +25,21 @@ class DefectReportController(
         return ResponseEntity(response, HttpStatus.OK)
     }
 
-    @PostMapping("/swap-spots")
-    fun swapSpots(@RequestParam oneId: Long, @RequestParam anotherId: Long): ResponseEntity<*> {
-        defectReportService.swapSpots(oneId, anotherId)
+    @PostMapping("/move-spot")
+    fun moveSpot(@RequestParam spotId: Long, fromIndex: Int, toIndex: Int): ResponseEntity<*> {
+        defectReportService.moveSpot(spotId, fromIndex, toIndex)
+        return ResponseEntity.ok().build<Any>()
+    }
+
+    @PostMapping("/move-struct-elem")
+    fun moveStructElem(@RequestParam structElemId: Long, fromIndex: Int, toIndex: Int): ResponseEntity<*> {
+        defectReportService.moveStructElem(structElemId, fromIndex, toIndex)
+        return ResponseEntity.ok().build<Any>()
+    }
+
+    @PostMapping("/move-row")
+    fun moveRow(@RequestParam rowId: Long, fromIndex: Int, toIndex: Int): ResponseEntity<*> {
+        defectReportService.moveRow(rowId, fromIndex, toIndex)
         return ResponseEntity.ok().build<Any>()
     }
 }

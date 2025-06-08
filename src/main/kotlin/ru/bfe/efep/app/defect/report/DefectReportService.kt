@@ -17,6 +17,7 @@ import ru.bfe.efep.app.inspection.photodoc.applyTemplate
 import ru.bfe.efep.app.inspection.photodoc.standard
 import ru.bfe.efep.app.s3.S3Service
 import ru.bfe.efep.app.standard.fullName
+import ru.bfe.efep.app.structelem.StructElemRepository
 
 @Service
 class DefectReportService(
@@ -27,7 +28,8 @@ class DefectReportService(
     private val photoDocRepository: PhotoDocRepository,
     private val inspectionRepository: InspectionRepository,
     private val defectReportRepository: DefectReportRepository,
-    private val s3Service: S3Service
+    private val s3Service: S3Service,
+    private val structElemRepository: StructElemRepository
 ) {
 
     @Transactional
@@ -95,31 +97,76 @@ class DefectReportService(
         }
     }
 
-    @Transactional
     fun getReport(inspectionId: Long): DefectReportResponse? {
-        val report = defectReportRepository.findAllByInspectionId(inspectionId)
-
-        return report.map {
+        val report = defectReportRepository.findAllByInspectionId(inspectionId).map {
             it.toResponse()
-        }.firstOrNull()?.also {
-            it.spots
-                .sortedBy { it.sortOrder }
-                .flatMap {
-                    it.structElems.sortedBy { it.sortOrder }
-                        .flatMap { it.rows.sortedBy { it.sortOrder } }
-                        .flatMap { it.photos }
-                }
-                .forEach {
-                    it.url = s3Service.generateDownloadUrl(it.source)
-                }
+        }.firstOrNull()
+
+        report?.spots?.sortBy { it.sortOrder }
+
+        report?.spots?.forEach { spot ->
+            spot.structElems.sortBy { it.sortOrder }
+
+            spot.structElems.forEach { structElem ->
+                structElem.rows.sortBy { it.sortOrder }
+
+                structElem.rows.forEach { row -> {
+                    row.photos.forEach { photo ->
+                        photo.url = s3Service.generateDownloadUrl(photo.source)
+                    }
+                }}
+            }
         }
+
+        return report
     }
 
     @Transactional
-    fun swapSpots( oneId: Long, anotherId: Long) {
-        val one = defectReportSpotRepository.findById(oneId).get()
-        val another = defectReportSpotRepository.findById(anotherId).get()
-        one.sortOrder = another.sortOrder.also { another.sortOrder = one.sortOrder }
-        defectReportSpotRepository.saveAll(listOf(one, another))
+    fun moveSpot(spotId: Long, fromIndex: Int, toIndex: Int) {
+        val spot = defectReportSpotRepository.findById(spotId).get()
+        val spots = spot.report.spots
+        spots.sortBy { it.sortOrder }
+        spots.move(fromIndex, toIndex)
+
+        spots.forEachIndexed { i, it ->
+            it.sortOrder = i
+        }
+
+        defectReportSpotRepository.saveAll(spots)
     }
+
+    @Transactional
+    fun moveStructElem(structElemId: Long, fromIndex: Int, toIndex: Int) {
+        val structElem = defectReportStructElemRepository.findById(structElemId).get()
+        val structElems = structElem.spot.structElems
+        structElems.sortBy { it.sortOrder }
+        structElems.move(fromIndex, toIndex)
+
+        structElems.forEachIndexed { i, it ->
+            it.sortOrder = i
+        }
+
+        defectReportStructElemRepository.saveAll(structElems)
+    }
+
+    @Transactional
+    fun moveRow(rowId: Long, fromIndex: Int, toIndex: Int) {
+        val row = defectReportRowRepository.findById(rowId).get()
+        val rows = row.structElem.rows
+        rows.sortBy { it.sortOrder }
+        rows.move(fromIndex, toIndex)
+
+        rows.forEachIndexed { i, it ->
+            it.sortOrder = i
+        }
+
+        defectReportRowRepository.saveAll(rows)
+    }
+
+}
+
+fun <T> MutableList<T>.move(fromIndex: Int, toIndex: Int) {
+    if (fromIndex == toIndex) return
+    val item = this.removeAt(fromIndex)
+    this.add(toIndex, item)
 }

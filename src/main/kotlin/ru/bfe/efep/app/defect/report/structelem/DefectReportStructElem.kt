@@ -14,7 +14,7 @@ data class DefectReportStructElem(
     val text: String,
 
     @Column(nullable = false)
-    val sortOrder: Int,
+    var sortOrder: Int,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
