@@ -110,11 +110,11 @@ class DefectReportService(
             spot.structElems.forEach { structElem ->
                 structElem.rows.sortBy { it.sortOrder }
 
-                structElem.rows.forEach { row -> {
+                structElem.rows.forEach { row ->
                     row.photos.forEach { photo ->
                         photo.url = s3Service.generateDownloadUrl(photo.source)
                     }
-                }}
+                }
             }
         }
 
