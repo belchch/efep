@@ -5,7 +5,7 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "spots")
 @Inheritance(strategy = InheritanceType.JOINED)
-class Spot(
+data class Spot(
     @Id @GeneratedValue
     val id: Long? = null,
 
