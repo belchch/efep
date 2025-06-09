@@ -62,4 +62,12 @@ data class CaseResponse(
     val createdAt: Instant,
     val deadline: Instant,
     val inspectionIds: List<Long>,
+    val stages: CaseStagesResponse
+)
+
+data class CaseStagesResponse(
+    val inspection: Boolean,
+    val generalView: Boolean,
+    val defect: Boolean,
+    val workVolume: Boolean
 )

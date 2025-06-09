@@ -104,7 +104,13 @@ fun Case.toResponse() = CaseResponse(
     createdBy = createdBy.toResponse(),
     createdAt = createdAt,
     deadline = deadline,
-    inspectionIds = inspections.map { it.id!! }
+    inspectionIds = inspections.map { it.id!! },
+    stages = CaseStagesResponse(
+        inspection = inspections.first().photoDocs.isNotEmpty(),
+        generalView = false,
+        defect =  inspections.first().defectReports.any { it.spots.isNotEmpty() },
+        workVolume = false
+    )
 )
 
 fun CourtRepository.findByIdOrThrow(id: Long): Court {
