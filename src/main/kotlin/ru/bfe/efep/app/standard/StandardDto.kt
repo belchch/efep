@@ -3,7 +3,7 @@ package ru.bfe.efep.app.standard
 data class StandardResponse (
     val id: Long? = null,
     val name: String,
-    val description: String
+    val description: String?
 )
 
 data class StandardUpdateRequest (

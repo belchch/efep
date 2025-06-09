@@ -18,7 +18,7 @@ class SpotService(
     }
 
     fun getAllSpots(): List<SpotResponse> {
-        return spotRepository.findAll().map { it.toResponse() }
+        return spotRepository.findAll().map { it.toResponse() }.sortedBy { it.name }
     }
 
     fun updateSpot(

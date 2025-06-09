@@ -20,7 +20,7 @@ class StructElemService(
     }
 
     fun getAllStructElems(): List<StructElemResponse> {
-        return structElemRepository.findAll().map { it.toResponse() }
+        return structElemRepository.findAll().map { it.toResponse() }.sortedBy { it.name }
     }
 
     fun updateStructElem(

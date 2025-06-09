@@ -18,7 +18,7 @@ class MaterialService(
     }
 
     fun getAllMaterials(): List<MaterialResponse> {
-        return materialRepository.findAll().map { it.toResponse() }
+        return materialRepository.findAll().map { it.toResponse() }.sortedBy { it.name }
     }
 
     fun updateMaterial(

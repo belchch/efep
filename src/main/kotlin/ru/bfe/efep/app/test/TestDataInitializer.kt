@@ -17,7 +17,7 @@ import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 import java.time.Instant
 
-@Component
+
 class TestDataInitializer(
     private val spotRepository: SpotRepository,
     private val materialRepository: MaterialRepository,
@@ -31,16 +31,20 @@ class TestDataInitializer(
 
         spotRepository.saveAll(
             listOf(
-                Spot(name = "Адресная табличка")
+                Spot(name = "Адресная табличка"),
+                Spot(name = "Подъезд"),
+                Spot(name = "Нумирация квартир"),
+                Spot(name = "Дверь в квартиру"),
             )
         )
 
         roomRepository.saveAll(
             listOf(
-                Room(name = "Гостиная"),
+                Room(name = "Холл"),
+                Room(name = "Санузел"),
+                Room(name = "Жилая комната"),
                 Room(name = "Кухня"),
-                Room(name = "Туалет"),
-                Room(name = "Прихожая"),
+                Room(name = "Кухня-гостиная"),
             )
         )
 

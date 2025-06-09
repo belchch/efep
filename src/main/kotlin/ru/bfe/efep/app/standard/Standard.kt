@@ -12,5 +12,5 @@ data class Standard(
     val name: String,
 
     @Column(length = 500)
-    val description: String,
+    val description: String? = null,
 )
