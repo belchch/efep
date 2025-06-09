@@ -30,19 +30,19 @@ class DefectReportService(
     private val photoDocRepository: PhotoDocRepository,
     private val inspectionRepository: InspectionRepository,
     private val defectReportRepository: DefectReportRepository,
-    private val s3Service: S3Service,
-    private val structElemRepository: StructElemRepository
+    private val s3Service: S3Service
 ) {
 
     @Transactional
-    fun buildReport(inspectionId: Long) {
+    fun buildReport(inspectionId: Long, useTechnicalReport: Boolean) {
         defectReportRepository.deleteByInspectionId(inspectionId)
 
         val inspection = inspectionRepository.findById(inspectionId).get()
 
         val report = defectReportRepository.save(
             DefectReport(
-                inspection = inspection
+                inspection = inspection,
+                useTechnicalReport = useTechnicalReport,
             )
         )
 
@@ -50,7 +50,8 @@ class DefectReportService(
             it.type == PhotoDocType.DEFECT &&
                     it.defectInfo != null &&
                     it.spot != null &&
-                    (it.defectInfo?.defect != null || it.defectInfo?.technicalReportRow != null)
+                    it.defectInfo?.structElem != null &&
+                    (it.defectInfo?.defect != null || (it.defectInfo?.technicalReportRow != null && useTechnicalReport))
         }.sortedBy { it.id }
 
         defects.groupBy { it.spot!! }.toList().forEachIndexed { spotIndex, (spotKey, spotValue) ->

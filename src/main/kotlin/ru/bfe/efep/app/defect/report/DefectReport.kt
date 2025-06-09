@@ -22,6 +22,8 @@ data class DefectReport(
     @JoinColumn(nullable = false)
     var inspection: Inspection,
 
+    val useTechnicalReport: Boolean,
+
     @OneToMany(mappedBy = "report", cascade = [(CascadeType.ALL)])
     var spots: MutableList<DefectReportSpot> = mutableListOf(),
 )

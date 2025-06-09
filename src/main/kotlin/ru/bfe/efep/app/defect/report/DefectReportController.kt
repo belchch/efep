@@ -16,8 +16,8 @@ class DefectReportController(
     private val defectReportService: DefectReportService
 ) {
     @PostMapping("/build")
-    fun buildReport(@RequestParam inspectionId: Long): ResponseEntity<*> {
-        defectReportService.buildReport(inspectionId)
+    fun buildReport(@RequestParam inspectionId: Long, @RequestParam useTechnicalReport: Boolean): ResponseEntity<*> {
+        defectReportService.buildReport(inspectionId, useTechnicalReport)
         return ResponseEntity.ok().build<Any>()
     }
 

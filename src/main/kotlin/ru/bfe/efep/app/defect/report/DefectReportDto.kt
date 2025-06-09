@@ -5,10 +5,12 @@ import ru.bfe.efep.app.defect.report.spot.toResponse
 
 data class DefectReportResponse(
     val id: Long,
-    val spots: MutableList<DefectReportSpotResponse>
+    val spots: MutableList<DefectReportSpotResponse>,
+    val useTechnicalReport: Boolean
 )
 
 fun DefectReport.toResponse() = DefectReportResponse(
     id = id!!,
-    spots = spots.map { it.toResponse() }.toMutableList()
+    spots = spots.map { it.toResponse() }.toMutableList(),
+    useTechnicalReport = useTechnicalReport
 )
