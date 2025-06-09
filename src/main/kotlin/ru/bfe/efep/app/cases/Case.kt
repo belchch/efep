@@ -57,7 +57,7 @@ data class Case(
     var deadline: Instant,
 
     @OneToMany(mappedBy = "case")
-    var inspections: MutableList<Inspection>
+    var inspections: MutableList<Inspection> = mutableListOf(),
 )
 
 enum class CaseStatus {

@@ -2,7 +2,10 @@ package ru.bfe.efep.app.cases
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import ru.bfe.efep.app.user.User
+import java.security.Principal
 import java.time.Instant
 
 @RestController
@@ -12,10 +15,10 @@ class CaseController(
 ) {
 
     @PostMapping
-    fun createCase(@RequestBody request: CaseCreateRequest): ResponseEntity<CaseResponse> {
+    fun createCase(@RequestBody request: CaseCreateRequest, @AuthenticationPrincipal user: User): ResponseEntity<CaseResponse> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(caseService.createCase(request))
+            .body(caseService.createCase(request, user))
     }
 
     @GetMapping("/{id}")

@@ -4,9 +4,11 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.court.CourtRepository
+import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.judge.JudgeRepository
 import ru.bfe.efep.app.region.RegionRepository
+import ru.bfe.efep.app.user.User
 import ru.bfe.efep.app.user.UserRepository
 import java.time.Instant
 
@@ -21,17 +23,28 @@ class CaseService(
     private val inspectionRepository: InspectionRepository
 ) {
 
-    fun createCase(request: CaseCreateRequest): CaseResponse {
-        return caseRepository.save(
+    fun createCase(request: CaseCreateRequest, user: User): CaseResponse {
+        val created = caseRepository.save(
             request.toEntity(
                 courtRepository = courtRepository,
                 judgeRepository = judgeRepository,
                 companyRepository = companyRepository,
                 regionRepository = regionRepository,
                 userRepository = userRepository,
-                inspectionRepository = inspectionRepository
+                systemProps = CaseCreateSystemProps(
+                    createdUserId = user.id!!,
+                    createdDate = Instant.now(),
+                )
             )
-        ).toResponse()
+        )
+
+        val inspection = inspectionRepository.save(Inspection(
+            case = created,
+            address = request.facilityAddress
+        ))
+
+        created.inspections.add(inspection)
+        return created.toResponse()
     }
 
     fun getCase(id: Long): CaseResponse {
@@ -62,7 +75,7 @@ class CaseService(
             createdAtTo = createdAtTo
         )
 
-        return caseRepository.findAll(spec).map { it.toResponse() }
+        return caseRepository.findAll(spec).map { it.toResponse() }.sortedByDescending { it.createdAt }
     }
 
     fun updateCase(

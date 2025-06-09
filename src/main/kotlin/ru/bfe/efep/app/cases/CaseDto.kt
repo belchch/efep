@@ -9,17 +9,14 @@ import java.time.Instant
 
 data class CaseCreateRequest(
     val number: String,
-    val status: CaseStatus,
-    val priority: CasePriority,
+    val status: CaseStatus?,
+    val priority: CasePriority?,
     val facilityAddress: String,
     val courtId: Long?,
     val judgeId: Long?,
     val companyId: Long,
     val regionId: Long,
-    val createdById: Long,
-    val createdDate: Instant,
-    val deadline: Instant,
-    val inspectionIds: List<Long>
+    val deadline: Instant
 )
 
 data class CaseUpdateRequest(

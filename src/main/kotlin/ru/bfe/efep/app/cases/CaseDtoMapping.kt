@@ -7,6 +7,7 @@ import ru.bfe.efep.app.company.toResponse
 import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.court.CourtRepository
 import ru.bfe.efep.app.court.toResponse
+import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.judge.JudgeRepository
@@ -17,6 +18,7 @@ import ru.bfe.efep.app.region.toResponse
 import ru.bfe.efep.app.user.User
 import ru.bfe.efep.app.user.UserRepository
 import ru.bfe.efep.app.user.toResponse
+import java.time.Instant
 
 
 fun CaseCreateRequest.toEntity(
@@ -25,23 +27,27 @@ fun CaseCreateRequest.toEntity(
     companyRepository: CompanyRepository,
     regionRepository: RegionRepository,
     userRepository: UserRepository,
-    inspectionRepository: InspectionRepository,
+    systemProps: CaseCreateSystemProps
 ): Case {
     return Case(
         number = number,
-        status = status,
-        priority = priority,
+        status = status ?: CaseStatus.OPEN,
+        priority = priority ?: CasePriority.LOW,
         facilityAddress = facilityAddress,
         court = courtId?.let { courtRepository.findByIdOrThrow(it) },
         judge = judgeId?.let { judgeRepository.findByIdOrThrow(it) },
         company = companyRepository.findByIdOrThrow(companyId),
         region = regionRepository.findByIdOrThrow(regionId),
-        createdBy = userRepository.findByIdOrThrow(createdById),
-        createdAt = createdDate,
+        createdBy = userRepository.findByIdOrThrow(systemProps.createdUserId),
+        createdAt = systemProps.createdDate,
         deadline = deadline,
-        inspections = inspectionIds.map { inspectionRepository.findById(it).get() }.toMutableList()
     )
 }
+
+data class CaseCreateSystemProps (
+    val createdUserId: Long,
+    val createdDate: Instant,
+)
 
 fun CaseUpdateRequest.toEntity(
     existing: Case,
