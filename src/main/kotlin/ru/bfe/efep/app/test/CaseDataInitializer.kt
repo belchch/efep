@@ -11,6 +11,7 @@ import ru.bfe.efep.app.company.Company
 import ru.bfe.efep.app.company.CompanyRepository
 import ru.bfe.efep.app.court.Court
 import ru.bfe.efep.app.court.CourtRepository
+import ru.bfe.efep.app.inspection.Inspection
 import ru.bfe.efep.app.inspection.InspectionRepository
 import ru.bfe.efep.app.judge.Judge
 import ru.bfe.efep.app.judge.JudgeRepository
@@ -29,7 +30,8 @@ class CaseDataInitializer(
     private val regionRepository: RegionRepository,
     private val userRepository: UserRepository,
     private val caseRepository: CaseRepository,
-    private val inspectionAndUserDataInitializer: InspectionAndUserDataInitializer
+    private val inspectionRepository: InspectionRepository
+    //private val inspectionAndUserDataInitializer: InspectionAndUserDataInitializer
 ) : CommandLineRunner {
 
     @Transactional
@@ -133,8 +135,19 @@ class CaseDataInitializer(
                 )
             )
         }
-        caseRepository.saveAll(cases)
+        val savedCases = caseRepository.saveAll(cases)
 
-        inspectionAndUserDataInitializer.run()
+        savedCases.forEach { case ->
+            createInspection(case.id!!, case.facilityAddress)
+        }
+    }
+
+    private fun createInspection(caseId: Long, address: String) {
+        val inspection2 = Inspection(
+            address = address,
+            performedDate = Instant.now().minusSeconds(86400),
+            case = caseRepository.findById(caseId).orElse(null),
+        )
+        inspectionRepository.save(inspection2)
     }
 }

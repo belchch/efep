@@ -25,6 +25,10 @@ class InspectionService(
         return inspectionRepository.findAll().map { it.toResponse() }
     }
 
+    fun getAllByCaseId(caseId: Long): List<InspectionResponse> {
+        return inspectionRepository.findAllByCaseId(caseId).map { it.toResponse() }
+    }
+
     fun updateInspection(
         id: Long,
         request: InspectionUpdateRequest

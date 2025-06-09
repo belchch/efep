@@ -22,9 +22,13 @@ class InspectionController(
         return ResponseEntity.ok(inspection)
     }
 
-    @GetMapping
-    fun getAllInspections(): ResponseEntity<List<InspectionResponse>> {
-        val inspections = inspectionService.getAllInspections()
+    @GetMapping()
+    fun getAllInspections(@RequestParam caseId: Long?): ResponseEntity<List<InspectionResponse>> {
+        val inspections = if (caseId != null) {
+            inspectionService.getAllByCaseId(caseId)
+        } else {
+            inspectionService.getAllInspections()
+        }
         return ResponseEntity.ok(inspections)
     }
 
