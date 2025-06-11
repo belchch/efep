@@ -16,7 +16,6 @@ import ru.bfe.efep.app.standard.StandardRepository
 import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 
-@Component
 class DefectDataInitializer2(
     private val materialRepository: MaterialRepository,
     private val structElemRepository: StructElemRepository,
@@ -333,24 +332,7 @@ class DefectDataInitializer2(
                 hasValue = false,
                 hasCause = false
             ),
-            Defect(
-                template = "Механические повреждения (причина возникновения: эксплуатация)",
-                standard = standard_7113330_t815,
-                structElem = floor,
-                material = laminate,
-                flaw = def,
-                hasValue = false,
-                hasCause = false
-            ),
-            Defect(
-                template = "Отклонения от заданного уклона покрытий при измерении 2-метровой рейкой {{ЗНАЧЕНИЕ}} мм на 1м (причина возникновения: производство)",
-                standard = standard_7113330_t815_2,
-                structElem = floor,
-                material = laminate,
-                flaw = otklan,
-                hasValue = true,
-                hasCause = false
-            ),
+
             Defect(
                 template = "Механические повреждения ПВХ профиля  (причина возникновения: производство)",
                 standard = standard_730674_547,
