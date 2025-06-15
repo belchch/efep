@@ -22,7 +22,7 @@ import ru.bfe.efep.app.user.UserRepository
 import java.time.Instant
 import kotlin.random.Random
 
-@Component
+
 class CaseDataInitializer(
     private val courtRepository: CourtRepository,
     private val judgeRepository: JudgeRepository,

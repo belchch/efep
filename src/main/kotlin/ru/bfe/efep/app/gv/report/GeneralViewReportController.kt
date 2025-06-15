@@ -1,14 +1,7 @@
 package ru.bfe.efep.app.gv.report
 
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/general-view-report")
@@ -29,8 +22,14 @@ class GeneralViewReportController(
     }
 
     @PutMapping
-    fun updateReport(@RequestBody request: GeneralViewReportUpdateRequest): ResponseEntity<*> {
-        generalViewReportService.updateReport(request)
-        return ResponseEntity.ok().build<Any>()
+    fun updateReport(@RequestBody request: GeneralViewReportUpdateRequest): ResponseEntity<GeneralViewReportResponse> {
+        val response = generalViewReportService.updateReport(request)
+        return ResponseEntity.ok(response)
     }
+
+    @GetMapping("/gallery")
+    fun getGallery(@RequestParam inspectionId: Long): List<GeneralViewReportGalleryGroup>? {
+        return generalViewReportService.getGallery(inspectionId)
+    }
+
 }

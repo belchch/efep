@@ -21,12 +21,14 @@ fun GeneralViewReportRow.toResponse() = GeneralViewReportRowResponse(
 
 fun GeneralViewReport.toResponse() = GeneralViewReportResponse(
     id = id!!,
+    inspectionId = inspection.id!!,
     rows = rows.map { it.toResponse() }
 )
 
 fun GeneralViewReportPhotoUpdateRequest.toEntity(item: GeneralViewReportItem) = GeneralViewReportPhoto(
     id = id,
     source = source,
+    url = url,
     item = item
 )
 

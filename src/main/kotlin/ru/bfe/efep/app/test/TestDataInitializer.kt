@@ -17,7 +17,7 @@ import ru.bfe.efep.app.structelem.StructElem
 import ru.bfe.efep.app.structelem.StructElemRepository
 import java.time.Instant
 
-@Component
+
 class TestDataInitializer(
     private val spotRepository: SpotRepository,
     private val materialRepository: MaterialRepository,
